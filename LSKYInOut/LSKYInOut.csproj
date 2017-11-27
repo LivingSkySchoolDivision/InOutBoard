@@ -72,15 +72,6 @@
     <Content Include="Templates\Protected.Master" />
     <Content Include="Templates\JSON.Master" />
     <None Include="Properties\PublishProfiles\DashboardServer.pubxml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="index.aspx.cs">
