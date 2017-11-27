@@ -68,6 +68,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="index.aspx" />
+    <Content Include="Manage\index.aspx" />
+    <Content Include="My\index.aspx" />
     <Content Include="Templates\Unprotected.Master" />
     <Content Include="Templates\Protected.Master" />
     <Content Include="Templates\JSON.Master" />
@@ -81,10 +83,24 @@
     <Compile Include="index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Manage\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Manage\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\LoginSession.cs" />
     <Compile Include="Model\TrackedUser.cs" />
     <Compile Include="Model\UserStatus.cs" />
+    <Compile Include="My\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates\JSON.Master.cs">
       <DependentUpon>JSON.Master</DependentUpon>
@@ -112,8 +128,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="JSON\" />
     <Folder Include="Login\" />
-    <Folder Include="Manage\" />
-    <Folder Include="My\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
   <PropertyGroup>
