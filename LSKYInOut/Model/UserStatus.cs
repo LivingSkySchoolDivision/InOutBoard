@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace LSKYInOut
+namespace LSKYInOut.Model
 {
     public class UserStatus
     {
         public int UserID { get; set; }
         public int StatusID { get; set; }
-        public string Color { get; set; }
+        public DateTime Expires { get; set; }
     }
 }
