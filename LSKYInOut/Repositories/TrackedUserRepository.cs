@@ -28,7 +28,7 @@ namespace LSKYInOut
                 NavisionEmployeIDNumber = dataReader["NavisionID"].ToString().Trim(),
                 LDAPUserName = dataReader["LDAPUserName"].ToString().Trim(),
                 IsHidden = dataReader["IsHidden"].ToString().Trim().ToBool(),
-                GroupIDs = dataReader["IsHidden"].ToString().Trim().ParseIDList(';'),
+                GroupIDs = dataReader["GroupMemberships"].ToString().Trim().ParseIDList(';'),
                 Status = _userStatusRepo.GetStatusForUser(dataReader["ID"].ToString().Trim().ToInt())
             };
         }
