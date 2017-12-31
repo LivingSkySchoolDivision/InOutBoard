@@ -19,6 +19,18 @@ namespace LSKYInOut
             return 0;
         }
 
+        public static double ToDouble(this string thisString)
+        {
+            Double returnMe = 0;
+
+            if (Double.TryParse(thisString, out returnMe))
+            {
+                return returnMe;
+            }
+
+            return (Double)0;
+        }
+
         public static DateTime ToDateTime(this string thisDate)
         {
             // Check if we were given the "null" date value from a SQL database, and return the C# minvalue instead

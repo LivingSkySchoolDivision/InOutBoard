@@ -17,7 +17,6 @@ namespace LSKYInOut
             _userStatusRepo = new UserStatusRepository();
         }
 
-
         private TrackedUser dataReaderToTrackedUser(SqlDataReader dataReader)
         {
             return new TrackedUser()
@@ -120,6 +119,42 @@ namespace LSKYInOut
                 IsHidden = true,
                 Groups = new List<Group>(),
             };
+        }
+
+        public void UpdateUserStatus(TrackedUser user, Status status, DateTime expiry)
+        {
+            using (SqlConnection connection = new SqlConnection(Settings.DBConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM UserStatuses WHERE Expires<GETDATE();INSERT INTO UserStatuses(UserID,StatusID,Expires) VALUES(@USERID,@STATUSID,@EXPIRYDATE);"
+                };
+                sqlCommand.Parameters.AddWithValue("USERID", user.ID);
+                sqlCommand.Parameters.AddWithValue("STATUSID", status.ID);
+                sqlCommand.Parameters.AddWithValue("EXPIRYDATE", expiry);
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
+        }
+
+        public void ClearUserStatus(TrackedUser user)
+        {
+            using (SqlConnection connection = new SqlConnection(Settings.DBConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM UserStatuses WHERE Expires<GETDATE();DELETE FROM UserStatuses WHERE UserID=@USERID;"
+                };
+                sqlCommand.Parameters.AddWithValue("USERID", user.ID);
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
         }
 
     }

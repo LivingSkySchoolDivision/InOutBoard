@@ -24,10 +24,9 @@ namespace LSKYInOut
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "SELECT * FROM UserStatuses WHERE UserID=@USERID AND Expires>@NOWDATE"
+                    CommandText = "SELECT * FROM UserStatuses WHERE UserID=@USERID AND Expires>GETDATE() ORDER BY Expires ASC;"
                 };
                 sqlCommand.Parameters.AddWithValue("USERID", UserID);
-                sqlCommand.Parameters.AddWithValue("NOWDATE", DateTime.Now);
                 sqlCommand.Connection.Open();
                 SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 

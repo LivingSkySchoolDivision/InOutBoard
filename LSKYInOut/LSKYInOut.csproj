@@ -112,6 +112,7 @@
     <Compile Include="Manage\index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Model\FriendlyTimeSpan.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\LoginSession.cs" />
     <Compile Include="Model\Status.cs" />
@@ -126,6 +127,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\StatusRepository.cs" />
+    <Compile Include="Repositories\FriendlyTimeSpanRepository.cs" />
     <Compile Include="Repositories\TrackedUserRepository.cs" />
     <Compile Include="Repositories\UserStatusRepository.cs" />
     <Compile Include="Templates\JSON.Master.cs">
