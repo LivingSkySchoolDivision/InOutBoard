@@ -19,10 +19,17 @@ namespace LSKYInOut.JSON
             Response.ContentEncoding = Encoding.UTF8;
             Response.ContentType = "application/json; charset=utf-8";
 
+            int filteredGroupID = Request.QueryString?["groupid"]?.ToString().ToInt() ?? 0;
+
+            if (filteredGroupID > 0)
+            {
+                users = users.Where(u => u.GroupIDs.Contains(filteredGroupID)).ToList();
+            }
+
             Response.Write("[");
 
             int counter = 0;
-            foreach (TrackedUser u in users)
+            foreach (TrackedUser u in users.OrderBy(x => x.DisplayName))
             {
                 counter++;
                 Response.Write("{");
@@ -30,8 +37,9 @@ namespace LSKYInOut.JSON
                 Response.Write("\"ID\": " + u.ID + ",");
                 Response.Write("\"Name\": \"" + u.DisplayName + "\",");
                 Response.Write("\"Status\": \"" + u.Status.Name + "\",");
-                Response.Write("\"IsAtWork\": \""+u.Status.IsAtWork+"\",");                
-                Response.Write("\"StatusColor\": \""+u.Status.Color+"\"");
+                Response.Write("\"IsAtWork\": \""+u.Status.IsAtWork+"\",");
+                Response.Write("\"StatusColor\": \"" + u.Status.Color + "\",");
+                Response.Write("\"InOrOut\": \"" + (u.Status.ID != 0 ? (u.Status.IsInOffice ? "IN" : "OUT") : "") + "\"");
                 Response.Write("}");
 
                 if (counter < users.Count)
