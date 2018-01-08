@@ -126,7 +126,7 @@ namespace LSKYInOut.My
 
             if (staff.Status.ID > 0)
             {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&clearstatus=1\" class=\"button clear_button\">Clear my status</a>");
+                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&clearstatus=1\" class=\"button clear_button\">Clear my status(es)</a>");
             }
 
             foreach (Status s in statuses)
