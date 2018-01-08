@@ -98,9 +98,9 @@ namespace LSKYInOut.My
                 displayedUsers = displayedUsers.Where(u => u.GroupIDs.Contains(groupID)).ToList();
             }
 
-            foreach (TrackedUser u in displayedUsers)
+            foreach (TrackedUser u in displayedUsers.OrderBy(u => u.DisplayName))
             {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + u.ID + "\" class=\"button\">" + u.DisplayNameLastNameFirst + "</a>");
+                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + u.ID + "\" class=\"button\">" + u.DisplayName + "</a>");
             }
 
             returnMe.Append("</div>");
@@ -124,12 +124,16 @@ namespace LSKYInOut.My
 
             List<Status> statuses = _statusRepo.GetAll();
 
+            if (staff.Status.ID > 0)
+            {
+                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&clearstatus=1\" class=\"button clear_button\">Clear my status</a>");
+            }
+
             foreach (Status s in statuses)
             {
                 returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&statusid=" + s.ID + "\" class=\"button\">" + s.Name + "</a>");
             }
-
-            returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&clearstatus=1\" class=\"button clear_button\">Clear my status</a>");
+            
             returnMe.Append("</div>");
 
             return returnMe.ToString();
@@ -153,7 +157,12 @@ namespace LSKYInOut.My
 
             foreach(FriendlyTimeSpan t in timeSpans)
             {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&statusid=" + status.ID + "&expires=" + t.TimeSpan.TotalHours + "\" class=\"button\">" + t.Name + "</a>");
+                double TotalHours = t.TimeSpan.TotalHours;
+                if (TotalHours < 0.6)
+                {
+                    TotalHours = 0.6;
+                }
+                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&statusid=" + status.ID + "&expires=" + TotalHours + "\" class=\"button\">" + t.Name + "</a>");
             }
 
                         

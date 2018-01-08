@@ -11,28 +11,13 @@ namespace LSKYInOut
         {
             new FriendlyTimeSpan()
             {
-                Name = "One hour from now",
-                TimeSpan = new TimeSpan(1,0,0)
-            },
-            new FriendlyTimeSpan()
-            {
-                Name = "Two hours from now",
-                TimeSpan = new TimeSpan(2,0,0)
-            },
-            new FriendlyTimeSpan()
-            {
-                Name = "Three hours from now",
-                TimeSpan = new TimeSpan(3,0,0)
-            },
-            new FriendlyTimeSpan()
-            {
-                Name = "Four hours from now",
-                TimeSpan = new TimeSpan(4,0,0)
-            },
-            new FriendlyTimeSpan()
-            {
-                Name = "After Noon",
+                Name = "Morning",
                 TimeSpan = DateTime.Today.AddHours((double)13)-DateTime.Now
+            },
+            new FriendlyTimeSpan()
+            {
+                Name = "Afternoon",
+                TimeSpan = DateTime.Today.AddHours((double)17)-DateTime.Now
             },
             new FriendlyTimeSpan()
             {
