@@ -26,7 +26,8 @@ namespace LSKYInOut.JSON
                 users = users.Where(u => u.GroupIDs.Contains(filteredGroupID)).ToList();
             }
 
-            Response.Write("[");
+            Response.Write("{ ");            
+            Response.Write("\"Statuses\" :[");
 
             int counter = 0;
             foreach (TrackedUser u in users.OrderBy(x => x.DisplayName))
@@ -48,7 +49,9 @@ namespace LSKYInOut.JSON
                 }
 
             }
-            Response.Write("]");
+            Response.Write("] ");
+
+            Response.Write("} ");
             Response.End();
         }
     }
