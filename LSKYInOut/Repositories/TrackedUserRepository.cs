@@ -28,7 +28,7 @@ namespace LSKYInOut
                 LDAPUserName = dataReader["LDAPUserName"].ToString().Trim(),
                 IsHidden = dataReader["IsHidden"].ToString().Trim().ToBool(),
                 GroupIDs = dataReader["GroupMemberships"].ToString().Trim().ParseIDList(';'),
-                Status = _userStatusRepo.GetStatusForUser(dataReader["ID"].ToString().Trim().ToInt())
+                Statuses = _userStatusRepo.GetStatusForUser(dataReader["ID"].ToString().Trim().ToInt())
             };
         }
 
@@ -62,7 +62,7 @@ namespace LSKYInOut
                 sqlCommand.Connection.Close();
             }
 
-            return returnMe.OrderBy(u => u.LastName).ThenBy(u => u.FirstName).ToList();
+            return returnMe.OrderBy(u => u.DisplayName).ToList();
         }
 
         public List<TrackedUser> GetByGroup(Group group)
@@ -138,6 +138,13 @@ namespace LSKYInOut
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Connection.Close();
             }
+        }
+
+        public void UpdateUserStatus(TrackedUser user, Status status, FriendlyTimeSpan expiry)
+        {
+            DateTime expiryDate = DateTime.Now.Add(expiry.TimeSpan);
+            if (expiryDate <= DateTime.Now) { expiryDate.AddMinutes(1); }
+            UpdateUserStatus(user, status, expiryDate);
         }
 
         public void ClearUserStatus(TrackedUser user)

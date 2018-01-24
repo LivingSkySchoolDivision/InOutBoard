@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace LSKYInOut.My
 {
-    public partial class index : System.Web.UI.Page
+    public partial class index1 : System.Web.UI.Page
     {
         TrackedUserRepository _userRepo = new TrackedUserRepository();
         StatusRepository _statusRepo = new StatusRepository();
@@ -16,161 +15,123 @@ namespace LSKYInOut.My
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // If you come back to this and wonder wtf the question marks are, they are null propagation operators.
-            // If the groupid variable is null, it resolves to the 0 at the end.
-
-            int staffID = Request.QueryString?["staffid"]?.ToString().ToInt() ?? 0;
-            int statusID = Request.QueryString?["statusid"]?.ToString().ToInt() ?? 0;
-            int filteredGroupID = Request.QueryString?["groupid"]?.ToString().ToInt() ?? 0;
-            Double expireHours = Request.QueryString?["expires"]?.ToString().ToDouble() ?? 0;
-            int clear_status = Request.QueryString?["clearstatus"]?.ToString().ToInt() ?? 0;
-
-            // If there is no staff Id, display staff picker
-            // If there is no status ID, display status picker
-            // If there IS a staff and status ID, display expiration picker
-
-            // Show all 3 sections on the page, but if there are no IDs then they should be empty
-
-            TrackedUser user = _userRepo.Get(staffID);
-            Status status = _statusRepo.Get(statusID);
-
-            if (expireHours < 0)
+            if (!IsPostBack)
             {
-                expireHours = 0;
-            }
-            if (expireHours > 9000)
-            {
-                expireHours = 9000;
-            }
-
-            if (clear_status == 1)
-            {
-                _userRepo.ClearUserStatus(user);
-
-                // Reset the variables so we go back to the main menu
-                staffID = 0;
-                statusID = 0;
-                expireHours = 0;
-                user = _userRepo.Get(0);
-                status = _statusRepo.Get(0);
-            }
-
-            if ((user.ID > 0) && (status.ID > 0) && (expireHours >0))
-            {
-                // Set the user's status
-                // Calculate a timespan based on the hours given                 
-                DateTime expiryDate = DateTime.Now.AddHours(expireHours);
-
-                _userRepo.UpdateUserStatus(user, status, expiryDate);
-
-                // Reset the variables so we go back to the main menu
-                staffID = 0;
-                statusID = 0;
-                expireHours = 0;
-                user = _userRepo.Get(0);
-                status = _statusRepo.Get(0);
-            } 
-
-            if (user.ID == 0)
-            {
-                Response.Write("<!--Staff-->");
-                litStaffList.Text = StaffPicker(filteredGroupID);
-            } else if (status.ID == 0)
-            {
-                Response.Write("<!--Status-->");
-                litStatusList.Text = StatusPicker(filteredGroupID, user);
-            } else
-            {
-                Response.Write("<!--Expiration-->");
-                litExpiration.Text = ExpiryPicker(filteredGroupID, user, status);
-            }
-        }
-
-        private string StaffPicker(int groupID)
-        {
-            StringBuilder returnMe = new StringBuilder();
-            
-            returnMe.Append("<div id=\"staff_picker_container\">");
-
-            List<TrackedUser> displayedUsers = _userRepo.GetAll().Where(u => !u.IsHidden).ToList();
-            if (groupID > 0)
-            {
-                displayedUsers = displayedUsers.Where(u => u.GroupIDs.Contains(groupID)).ToList();
-            }
-
-            foreach (TrackedUser u in displayedUsers.OrderBy(u => u.DisplayName))
-            {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + u.ID + "\" class=\"button\">" + u.DisplayName + "</a>");
-            }
-
-            returnMe.Append("</div>");
-
-            return returnMe.ToString();
-        }
-
-        private string StatusPicker(int groupID, TrackedUser staff)
-        {
-            StringBuilder returnMe = new StringBuilder();
-
-            returnMe.Append("<div id=\"status_picker_container\">");
-
-            returnMe.Append("<div id=\"top_bar\">");
-            returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=0\" class=\"fa fa-arrow-circle-left return_button\"></a>");
-            returnMe.Append("<div id=\"top_bar_info\">");
-            returnMe.Append("<b>" + staff.DisplayName + "</b> is:");
-            returnMe.Append("</div>");
-            returnMe.Append("</div>");
-
-
-            List<Status> statuses = _statusRepo.GetAll();
-
-            if (staff.Status.ID > 0)
-            {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&clearstatus=1\" class=\"button clear_button\">Clear my status(es)</a>");
-            }
-
-            foreach (Status s in statuses)
-            {
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&statusid=" + s.ID + "\" class=\"button\">" + s.Name + "</a>");
-            }
-            
-            returnMe.Append("</div>");
-
-            return returnMe.ToString();
-        }
-
-        private string ExpiryPicker(int groupID, TrackedUser staff, Status status)
-        {
-
-            StringBuilder returnMe = new StringBuilder();
-
-            returnMe.Append("<div id=\"expiration_picker_container\">");
-
-            returnMe.Append("<div id=\"top_bar\">");
-            returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "\" class=\"fa fa-arrow-circle-left return_button\"></a>");
-            returnMe.Append("<div id=\"top_bar_info\">");
-            returnMe.Append("<b>" + staff.DisplayName + "</b> is <b>" + status.Name + "</b> until:");
-            returnMe.Append("</div>");
-            returnMe.Append("</div>");
-
-            List<FriendlyTimeSpan> timeSpans = _timeRepo.GetAll();
-
-            foreach(FriendlyTimeSpan t in timeSpans)
-            {
-                double TotalHours = t.TimeSpan.TotalHours;
-                if (TotalHours < 0.6)
+                // Load people
+                drpUsers.Items.Clear();
+                foreach (TrackedUser u in _userRepo.GetAll())
                 {
-                    TotalHours = 0.6;
+                    drpUsers.Items.Add(new ListItem(u.DisplayName, u.ID.ToString()));
                 }
-                returnMe.Append("<a href=\"?groupid=" + groupID + "&staffID=" + staff.ID + "&statusid=" + status.ID + "&expires=" + TotalHours + "\" class=\"button\">" + t.Name + "</a>");
+
+                // Load statuses
+                drpStatuses.Items.Clear();
+                foreach (Status s in _statusRepo.GetAll())
+                {
+                    drpStatuses.Items.Add(new ListItem(s.Name, s.ID.ToString()));
+                }
+
+                // Load timespans
+                drpExpiry.Items.Clear();
+                foreach (FriendlyTimeSpan t in _timeRepo.GetAll())
+                {
+                    drpExpiry.Items.Add(new ListItem(t.Name, t.ID.ToString()));
+                }
             }
-
-                        
-
-            returnMe.Append("</div>");
-
-            return returnMe.ToString();
         }
 
+        private string errorText(string str)
+        {
+            return "<b style='color: red;'>" + str + "</b>";
+        }
+
+        private void updateExistingStatuses()
+        {
+            // Get the user ID from the hidden field
+            TrackedUser selectedUser = _userRepo.Get(Parsers.ToInt(txtUserID.Value));
+            tblCurrentStatuses.Rows.Clear();
+            int statuscount = 0;
+            foreach (UserStatus status in selectedUser.Statuses)
+            {
+                statuscount++;
+                bool showThen = (statuscount < selectedUser.Statuses.Count) ? true : false;
+                tblCurrentStatuses.Rows.Add(addStatusTableRow(status, showThen));
+            }
+        }
+        
+        private TableRow addStatusTableRow(UserStatus status, bool showThen)
+        {
+            TableRow row = new TableRow();
+            row.CssClass = "status_table_row";
+
+            string line = "<b>" + status.Status.Name + "</b> until <b>" + status.Expires.ToShortDateString() + " at " + status.Expires.ToShortTimeString() + "</b>";
+            if (showThen)
+            {
+                line += ", and then...";
+            }
+
+            row.Cells.Add(new TableCell() { Text = "<div class=\"user_status\">" + line + "</div>", CssClass="status_table_row" });
+            //row.Cells.Add(new TableCell() { Text = "<a class=\"status_controls\" href=\"#\">REMOVE THIS STATUS</a>", CssClass = "status_table_row" });
+            return row;
+        }
+
+        protected void btnSetStatus_Click(object sender, EventArgs e)
+        {
+            // Parse selected values
+            TrackedUser selectedUser = _userRepo.Get(Parsers.ToInt(txtUserID.Value));
+            Status selectedStatus = _statusRepo.Get(Parsers.ToInt(drpStatuses.SelectedValue));
+            FriendlyTimeSpan selectedTimeSpan = _timeRepo.Get(Parsers.ToInt(drpExpiry.SelectedValue));
+                        
+            if (selectedUser.ID > 0)
+            {
+                if (selectedStatus.ID > 0)
+                {
+                    if (selectedTimeSpan.ID > 0)
+                    {
+                        UserStatus userStatus = new UserStatus()
+                        {
+                            Status = selectedStatus,
+                            Expires = DateTime.Now.Add(selectedTimeSpan.TimeSpan)
+                        };
+                        _userRepo.UpdateUserStatus(selectedUser, selectedStatus, selectedTimeSpan);
+                        updateExistingStatuses();
+                    }
+                    else
+                    {
+                        litStatus.Text = errorText("Invalid timespan selected");
+                    }
+                }
+                else
+                {
+                    litStatus.Text = errorText("Invalid status selected");
+                }
+            }
+            else
+            {
+                litStatus.Text = errorText("Invalid user selected");
+            }
+
+        }
+
+        protected void btnSelectUser_Click(object sender, EventArgs e)
+        {
+            // parse user
+            TrackedUser selectedUser = _userRepo.Get(Parsers.ToInt(drpUsers.SelectedValue));
+
+            if (selectedUser.ID > 0)
+            {
+                lblSelectedUser.Text = selectedUser.DisplayName + " is currently: <b>" + selectedUser.ActiveStatus + "</b>";
+                txtUserID.Value = selectedUser.ID.ToString();
+                tblUpdateControls.Visible = true;
+
+                updateExistingStatuses();
+            }
+
+        }
+
+        protected void btnAddCustomStatus_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -15,7 +15,16 @@ namespace LSKYInOut
         public bool IsHidden { get; set; }
         public List<Group> Groups { get; set; }
         public List<int> GroupIDs { get; set; }
-        public Status Status { get; set; }
+        public List<UserStatus> Statuses { get; set; }
+        public UserStatus ActiveStatus {
+            get {
+                if (Statuses.Count > 0)
+                {
+                    return Statuses.OrderBy(x => x.Expires).First();
+                }
+                return new UserStatus();
+            }
+        }
 
 
         public string DisplayName { get
@@ -34,7 +43,7 @@ namespace LSKYInOut
 
         public override string ToString()
         {
-            return this.DisplayName + ": " + this.Status;
+            return this.DisplayName + ": " + this.ActiveStatus;
         }
     }
 }

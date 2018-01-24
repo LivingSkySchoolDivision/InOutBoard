@@ -12,6 +12,7 @@ namespace LSKYInOut
         public string Color { get; set; }
         public bool IsInOffice { get; set; }
         public bool IsAtWork { get; set; }
+        public bool IsBusy { get; set; }
         public int SortOrder { get; set; }
 
         public override string ToString()

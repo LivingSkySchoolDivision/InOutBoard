@@ -27,7 +27,7 @@ namespace LSKYInOut.JSON
             }
 
             Response.Write("{ ");            
-            Response.Write("\"Statuses\" :[");
+            Response.Write("\"Users\" :[");
 
             int counter = 0;
             foreach (TrackedUser u in users.OrderBy(x => x.DisplayName))
@@ -37,22 +37,49 @@ namespace LSKYInOut.JSON
 
                 Response.Write("\"ID\": " + u.ID + ",");
                 Response.Write("\"Name\": \"" + u.DisplayName + "\",");
-                Response.Write("\"Status\": \"" + u.Status.Name + "\",");
-                Response.Write("\"IsAtWork\": \""+u.Status.IsAtWork+"\",");
-                Response.Write("\"StatusColor\": \"" + u.Status.Color + "\",");
-                Response.Write("\"InOrOut\": \"" + (u.Status.ID != 0 ? (u.Status.IsInOffice ? "IN" : "OUT") : "") + "\"");
+                Response.Write("\"ActiveStatus\": " + StatusJSON(u.ActiveStatus) + ",");
+                Response.Write("\"AllStatuses\": [");
+
+                int statusCounter = 0;
+                foreach(UserStatus status in u.Statuses)
+                {
+                    statusCounter++;
+                    Response.Write(StatusJSON(status));
+                    if (statusCounter < u.Statuses.Count)
+                    {
+                        Response.Write(",");
+                    }
+                }
+                Response.Write("] ");
+
                 Response.Write("}");
 
                 if (counter < users.Count)
                 {
                     Response.Write(",");
-                }
-
+                }            
             }
             Response.Write("] ");
 
             Response.Write("} ");
             Response.End();
+        }
+
+        private string StatusJSON(UserStatus status)
+        {
+            StringBuilder returnMe = new StringBuilder();
+
+            returnMe.Append("{ ");            
+            returnMe.Append(" \"Name\": \"" + status.Status.Name + "\",");
+            returnMe.Append(" \"InOrOut\": \"" + (status.Status.ID != 0 ? (status.Status.IsInOffice ? "IN" : "OUT") : "?") + "\",");
+            returnMe.Append(" \"Color\": \"" + status.Status.Color + "\",");
+            returnMe.Append(" \"IsInOffice\": \"" + status.Status.IsInOffice + "\",");
+            returnMe.Append(" \"IsAtWork\": \"" + status.Status.IsAtWork + "\",");
+            returnMe.Append(" \"IsBusy\": \"" + status.Status.IsBusy + "\",");
+            returnMe.Append(" \"Expires\": \"" + status.Expires + "\" ");
+            returnMe.Append("} ");
+
+            return returnMe.ToString();
         }
     }
 }

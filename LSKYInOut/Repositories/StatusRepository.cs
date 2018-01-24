@@ -51,7 +51,8 @@ namespace LSKYInOut
                 Color = dataReader["Color"].ToString().Trim(),
                 IsInOffice = dataReader["IsInOffice"].ToString().Trim().ToBool(),
                 IsAtWork = dataReader["IsAtWork"].ToString().Trim().ToBool(),
-                SortOrder = dataReader["SortOrder"].ToString().Trim().ToInt()
+                SortOrder = dataReader["SortOrder"].ToString().Trim().ToInt(),
+                IsBusy = dataReader["IsBusy"].ToString().Trim().ToBool()
             };
         }
 

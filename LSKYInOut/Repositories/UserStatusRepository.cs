@@ -16,8 +16,25 @@ namespace LSKYInOut
             _statusRepo = new StatusRepository();
         }
 
-        public Status GetStatusForUser(int UserID) 
+        private UserStatus dataReaderToUserStatus(SqlDataReader dataReader)
         {
+            // Check if the status is legit
+            Status status = _statusRepo.Get(dataReader["StatusID"].ToString().Trim().ToInt());
+            if (status.ID > 0)
+            {
+                return new UserStatus()
+                {
+                    Status = status,
+                    Expires = Parsers.ToDateTime(dataReader["Expires"].ToString().Trim())
+                };
+            }
+            return null;
+        }
+
+        public List<UserStatus> GetStatusForUser(int UserID) 
+        {
+            List<UserStatus> returnMe = new List<UserStatus>();
+
             using (SqlConnection connection = new SqlConnection(Settings.DBConnectionString))
             {
                 SqlCommand sqlCommand = new SqlCommand
@@ -34,14 +51,18 @@ namespace LSKYInOut
                 {
                     while (dbDataReader.Read())
                     {
-                        return _statusRepo.Get(dbDataReader["StatusID"].ToString().Trim().ToInt());                        
+                        UserStatus parsedStatus = dataReaderToUserStatus(dbDataReader);
+                        if (parsedStatus != null)
+                        {
+                            returnMe.Add(parsedStatus);
+                        }                        
                     }
                 }
 
                 sqlCommand.Connection.Close();
             }
 
-            return _statusRepo.Get(-1);
+            return returnMe;
         }
     }
 }
