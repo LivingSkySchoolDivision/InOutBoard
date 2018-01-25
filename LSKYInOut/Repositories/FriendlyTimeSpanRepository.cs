@@ -53,6 +53,18 @@ namespace LSKYInOut
             },
             new FriendlyTimeSpan()
             {
+                ID = 12,
+                Name = "15 minutes",
+                TimeSpan = new TimeSpan(0,15,0)
+            },
+            new FriendlyTimeSpan()
+            {
+                ID = 13,
+                Name = "30 minutes",
+                TimeSpan = new TimeSpan(0,15,0)
+            },
+            new FriendlyTimeSpan()
+            {
                 ID = 7,
                 Name = "1 hour",
                 TimeSpan = new TimeSpan(1,0,0)

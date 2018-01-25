@@ -121,7 +121,7 @@ namespace LSKYInOut
             };
         }
 
-        public void UpdateUserStatus(TrackedUser user, Status status, DateTime expiry)
+        public UserStatus UpdateUserStatus(UserStatus newUserStatus)
         {
             using (SqlConnection connection = new SqlConnection(Settings.DBConnectionString))
             {
@@ -129,22 +129,38 @@ namespace LSKYInOut
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "DELETE FROM UserStatuses WHERE Expires<GETDATE();INSERT INTO UserStatuses(UserID,StatusID,Expires) VALUES(@USERID,@STATUSID,@EXPIRYDATE);"
+                    CommandText = "DELETE FROM UserStatuses WHERE Expires<GETDATE();INSERT INTO UserStatuses(UserID,StatusID,Expires,thumbprint) VALUES(@USERID,@STATUSID,@EXPIRYDATE,@THUMB);"
                 };
-                sqlCommand.Parameters.AddWithValue("USERID", user.ID);
-                sqlCommand.Parameters.AddWithValue("STATUSID", status.ID);
-                sqlCommand.Parameters.AddWithValue("EXPIRYDATE", expiry);
+                sqlCommand.Parameters.AddWithValue("USERID", newUserStatus.UserID);
+                sqlCommand.Parameters.AddWithValue("STATUSID", newUserStatus.Status.ID);
+                sqlCommand.Parameters.AddWithValue("EXPIRYDATE", newUserStatus.Expires);
+                sqlCommand.Parameters.AddWithValue("THUMB", newUserStatus.Thumbprint);
                 sqlCommand.Connection.Open();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Connection.Close();
             }
+
+            return newUserStatus;
         }
 
-        public void UpdateUserStatus(TrackedUser user, Status status, FriendlyTimeSpan expiry)
+        public UserStatus UpdateUserStatus(TrackedUser user, Status status, DateTime expiry)
+        {
+            UserStatus newUserStatus = new UserStatus()
+            {
+                UserID = user.ID,
+                Status = status,
+                Expires = expiry,
+                Thumbprint = Helpers.Crypto.SHA256(DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + user.DisplayName + status.Name + expiry.ToLongDateString() + expiry.ToLongTimeString())
+            };
+
+            return UpdateUserStatus(newUserStatus);           
+        }
+
+        public UserStatus UpdateUserStatus(TrackedUser user, Status status, FriendlyTimeSpan expiry)
         {
             DateTime expiryDate = DateTime.Now.Add(expiry.TimeSpan);
             if (expiryDate <= DateTime.Now) { expiryDate.AddMinutes(1); }
-            UpdateUserStatus(user, status, expiryDate);
+            return UpdateUserStatus(user, status, expiryDate);
         }
 
         public void ClearUserStatus(TrackedUser user)

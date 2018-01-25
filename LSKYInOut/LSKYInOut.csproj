@@ -90,6 +90,7 @@
     <None Include="Properties\PublishProfiles\DashboardServer.pubxml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Crypto.cs" />
     <Compile Include="Helpers\ListExtensions.cs" />
     <Compile Include="Helpers\Parsers.cs" />
     <Compile Include="Helpers\Settings.cs" />

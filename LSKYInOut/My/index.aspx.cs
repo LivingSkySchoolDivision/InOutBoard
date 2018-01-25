@@ -37,7 +37,7 @@ namespace LSKYInOut.My
                 {
                     drpExpiry.Items.Add(new ListItem(t.Name, t.ID.ToString()));
                 }
-            }
+            }            
         }
 
         private string errorText(string str)
@@ -45,36 +45,36 @@ namespace LSKYInOut.My
             return "<b style='color: red;'>" + str + "</b>";
         }
 
-        private void updateExistingStatuses()
+        private void updateExistingStatuses(TrackedUser user)
         {
-            // Get the user ID from the hidden field
-            TrackedUser selectedUser = _userRepo.Get(Parsers.ToInt(txtUserID.Value));
-            tblCurrentStatuses.Rows.Clear();
-            int statuscount = 0;
-            foreach (UserStatus status in selectedUser.Statuses)
+            txtUserID.Value = user.ID.ToString();
+            tblUpdateControls.Visible = false;
+            
+            if (user != null)
             {
-                statuscount++;
-                bool showThen = (statuscount < selectedUser.Statuses.Count) ? true : false;
-                tblCurrentStatuses.Rows.Add(addStatusTableRow(status, showThen));
+                tblUpdateControls.Visible = true;
+                
+                chkSatusList.Items.Clear();                    
+                int statuscount = 0;
+                foreach (UserStatus status in user.Statuses.OrderBy(x => x.Expires))
+                {
+                    statuscount++;
+
+                    string line = "<b>" + status.Status.Name + "</b> until <b>" + status.Expires.ToShortDateString() + " at " + status.Expires.ToShortTimeString() + "</b>";
+                    if (statuscount < user.Statuses.Count)
+                    {
+                        line += ", and then...";
+                    }
+
+                    chkSatusList.Items.Add(new ListItem() { Value = status.Thumbprint, Text = line });
+                }
+
+                lblSelectedUser.Text = user.DisplayName + " is currently: <b>" + user.ActiveStatus + "</b>";
+                txtUserID.Value = user.ID.ToString();
+                
             }
         }
-        
-        private TableRow addStatusTableRow(UserStatus status, bool showThen)
-        {
-            TableRow row = new TableRow();
-            row.CssClass = "status_table_row";
-
-            string line = "<b>" + status.Status.Name + "</b> until <b>" + status.Expires.ToShortDateString() + " at " + status.Expires.ToShortTimeString() + "</b>";
-            if (showThen)
-            {
-                line += ", and then...";
-            }
-
-            row.Cells.Add(new TableCell() { Text = "<div class=\"user_status\">" + line + "</div>", CssClass="status_table_row" });
-            //row.Cells.Add(new TableCell() { Text = "<a class=\"status_controls\" href=\"#\">REMOVE THIS STATUS</a>", CssClass = "status_table_row" });
-            return row;
-        }
-
+                
         protected void btnSetStatus_Click(object sender, EventArgs e)
         {
             // Parse selected values
@@ -88,13 +88,12 @@ namespace LSKYInOut.My
                 {
                     if (selectedTimeSpan.ID > 0)
                     {
-                        UserStatus userStatus = new UserStatus()
-                        {
-                            Status = selectedStatus,
-                            Expires = DateTime.Now.Add(selectedTimeSpan.TimeSpan)
-                        };
-                        _userRepo.UpdateUserStatus(selectedUser, selectedStatus, selectedTimeSpan);
-                        updateExistingStatuses();
+                        UserStatus userStatus = _userRepo.UpdateUserStatus(selectedUser, selectedStatus, selectedTimeSpan);
+
+                        // Update the user status list displayed on the page
+                        selectedUser.Statuses.Add(userStatus);                        
+                        updateExistingStatuses(selectedUser);
+
                     }
                     else
                     {
@@ -115,23 +114,48 @@ namespace LSKYInOut.My
 
         protected void btnSelectUser_Click(object sender, EventArgs e)
         {
-            // parse user
-            TrackedUser selectedUser = _userRepo.Get(Parsers.ToInt(drpUsers.SelectedValue));
-
-            if (selectedUser.ID > 0)
+            TrackedUserRepository _userRepo = new TrackedUserRepository();
+            TrackedUser user = _userRepo.Get(Parsers.ToInt(drpUsers.SelectedValue));
+            if (user != null)
             {
-                lblSelectedUser.Text = selectedUser.DisplayName + " is currently: <b>" + selectedUser.ActiveStatus + "</b>";
-                txtUserID.Value = selectedUser.ID.ToString();
-                tblUpdateControls.Visible = true;
-
-                updateExistingStatuses();
+                updateExistingStatuses(user);
             }
-
         }
 
         protected void btnAddCustomStatus_Click(object sender, EventArgs e)
         {
 
+        }
+
+        protected void btnRemoveCheckedStatuses_Click(object sender, EventArgs e)
+        {
+            List<string> thumbprintsToRemove = new List<string>();
+            foreach(ListItem item in chkSatusList.Items)
+            {
+                if (item.Selected)
+                {
+                    thumbprintsToRemove.Add(item.Value);
+                }
+            }
+
+            if (thumbprintsToRemove.Count > 0)
+            {
+                UserStatusRepository _userStatusRepo = new UserStatusRepository();
+                foreach (string thumb in thumbprintsToRemove)
+                {
+                    _userStatusRepo.RemoveStatus(thumb);
+                }
+
+                if (!string.IsNullOrEmpty(txtUserID.Value))
+                {
+                    // Remove them from the selected user object so we can update the display of them
+                    TrackedUser user = _userRepo.Get(txtUserID.Value.ToInt());
+
+                    // Update the display
+                    updateExistingStatuses(user);
+                }
+            }
+            
         }
     }
 }

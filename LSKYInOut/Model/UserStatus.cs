@@ -7,8 +7,10 @@ namespace LSKYInOut
 {
     public class UserStatus
     {
+        public int UserID { get; set; }
         public Status Status { get; set; }
         public DateTime Expires { get; set; }
+        public string Thumbprint { get; set; }
         public UserStatus()
         {
             this.Status = new Status();

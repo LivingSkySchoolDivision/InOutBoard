@@ -25,10 +25,35 @@ namespace LSKYInOut
                 return new UserStatus()
                 {
                     Status = status,
-                    Expires = Parsers.ToDateTime(dataReader["Expires"].ToString().Trim())
+                    Expires = Parsers.ToDateTime(dataReader["Expires"].ToString().Trim()),
+                    Thumbprint = dataReader["Thumbprint"].ToString().Trim(),
+                    UserID = Parsers.ToInt(dataReader["UserID"].ToString().Trim())
                 };
             }
             return null;
+        }
+
+        public void RemoveStatus(string thumbprint)
+        {
+            if (thumbprint != null)
+            {
+                if (thumbprint.Length == 64)
+                {
+                    using (SqlConnection connection = new SqlConnection(Settings.DBConnectionString))
+                    {
+                        SqlCommand sqlCommand = new SqlCommand
+                        {
+                            Connection = connection,
+                            CommandType = CommandType.Text,
+                            CommandText = "DELETE FROM UserStatuses WHERE Thumbprint=@THUMB"
+                        };
+                        sqlCommand.Parameters.AddWithValue("THUMB", thumbprint);
+                        sqlCommand.Connection.Open();
+                        sqlCommand.ExecuteNonQuery();
+                        sqlCommand.Connection.Close();
+                    }
+                }
+            }
         }
 
         public List<UserStatus> GetStatusForUser(int UserID) 

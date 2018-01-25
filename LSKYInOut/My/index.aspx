@@ -32,13 +32,13 @@
 
                     <div class="user_info_current_statuses">
                         <div class="section_title">Current statuses:</div>
-                        <asp:Table ID="tblCurrentStatuses" runat="server" Width="100%">
-
-                        </asp:Table>
+                        <asp:CheckBoxList ID="chkSatusList" runat="server" CssClass="user_status"></asp:CheckBoxList>
                     </div>
                     
 
-                    <div class="user_info_add_statuses">     
+                    <div class="user_info_add_statuses">   
+                        <div class="section_title">Remove statuses:</div>
+                        <asp:Button ID="btnRemoveCheckedStatuses" runat="server" Text="Remove Checked Statuses" OnClick="btnRemoveCheckedStatuses_Click" />
                         <div class="section_title">Add a status:</div>                   
                         <asp:Table ID="tblAddStatuses" runat="server" Width="100%">
                             <asp:TableRow>                                
