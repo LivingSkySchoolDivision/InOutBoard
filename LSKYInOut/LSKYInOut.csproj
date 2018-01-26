@@ -82,7 +82,7 @@
     <Content Include="Manage\index.aspx" />
     <Content Include="My\index.aspx" />
     <Content Include="Styles\ipad.css" />
-    <Content Include="My\ipad.aspx" />
+    <Content Include="iPad\index.aspx" />
     <Content Include="Styles\my.css" />
     <Content Include="Templates\Unprotected.Master" />
     <Content Include="Templates\Protected.Master" />
@@ -128,14 +128,15 @@
     <Compile Include="My\index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
-    <Compile Include="My\ipad.aspx.cs">
-      <DependentUpon>ipad.aspx</DependentUpon>
+    <Compile Include="iPad\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="My\ipad.aspx.designer.cs">
-      <DependentUpon>ipad.aspx</DependentUpon>
+    <Compile Include="iPad\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\GroupRepository.cs" />
     <Compile Include="Repositories\StatusRepository.cs" />
     <Compile Include="Repositories\FriendlyTimeSpanRepository.cs" />
     <Compile Include="Repositories\TrackedUserRepository.cs" />

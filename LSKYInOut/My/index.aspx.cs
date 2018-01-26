@@ -37,7 +37,29 @@ namespace LSKYInOut.My
                 {
                     drpExpiry.Items.Add(new ListItem(t.Name, t.ID.ToString()));
                 }
-            }            
+            }
+
+            tblAllUsersStatus.Rows.Clear();
+            foreach (TrackedUser user in _userRepo.GetAll())
+            {
+                tblAllUsersStatus.Rows.Add(addUserStatusRow(user));
+            }
+        }
+        private TableRow addUserStatusRow(TrackedUser user)
+        {
+            TableRow row = new TableRow();
+
+            row.Cells.Add(new TableCell()
+            {
+                Text = user.DisplayName
+            });
+
+            row.Cells.Add(new TableCell()
+            {
+                Text = user.ActiveStatus.Status.Name
+            });
+
+            return row;
         }
 
         private string errorText(string str)

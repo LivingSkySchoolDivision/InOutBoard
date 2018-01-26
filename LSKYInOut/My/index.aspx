@@ -65,6 +65,9 @@
                     </asp:TableCell>
             </asp:TableRow>
         </asp:Table>
+
+        
+        <asp:Table ID="tblAllUsersStatus" runat="server"></asp:Table>
         
     </div>
 </asp:Content>

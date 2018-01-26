@@ -26,6 +26,11 @@ namespace LSKYInOut
             }
         }
 
+        public TrackedUser()
+        {
+            this.Groups = new List<Group>();
+            this.Statuses = new List<UserStatus>();
+        }
 
         public string DisplayName { get
             {

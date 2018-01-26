@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Templates/Unprotected.Master" AutoEventWireup="true" CodeBehind="ipad.aspx.cs" Inherits="LSKYInOut.My.index" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Templates/Unprotected.Master" AutoEventWireup="true" CodeBehind="index.aspx.cs" Inherits="LSKYInOut.My.index" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">    
     <!-- Tell Safari that this is an App, not a website -->
     <meta name="apple-mobile-web-app-capable" content="yes">

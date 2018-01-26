@@ -11,15 +11,17 @@ namespace LSKYInOut
     {
         private const string SQL = "SELECT * FROM Users";
         private UserStatusRepository _userStatusRepo;
+        private GroupRepository _groupRepo;
 
         public TrackedUserRepository()
         {
             _userStatusRepo = new UserStatusRepository();
+            _groupRepo = new GroupRepository();
         }
 
         private TrackedUser dataReaderToTrackedUser(SqlDataReader dataReader)
         {
-            return new TrackedUser()
+            TrackedUser returnMe = new TrackedUser()
             {
                 ID = dataReader["ID"].ToString().Trim().ToInt(),
                 FirstName = dataReader["FirstName"].ToString().Trim(),
@@ -30,6 +32,10 @@ namespace LSKYInOut
                 GroupIDs = dataReader["GroupMemberships"].ToString().Trim().ParseIDList(';'),
                 Statuses = _userStatusRepo.GetStatusForUser(dataReader["ID"].ToString().Trim().ToInt())
             };
+
+            returnMe.Groups = _groupRepo.Get(returnMe.GroupIDs);
+
+            return returnMe;
         }
 
         public List<TrackedUser> GetAll()

@@ -10,6 +10,6 @@ namespace LSKYInOut
         public int ID { get; set; }
         public string Name { get; set; }
         public bool IsHidden { get; set; }
-        public int SortOrder { get; set; }
+        public bool IsSystemAdministrator { get; set; }
     }
 }
