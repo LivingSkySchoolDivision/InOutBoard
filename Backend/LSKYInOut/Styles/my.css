@@ -1,0 +1,44 @@
+﻿body {
+    font-family: Arial;
+}
+
+#page_container {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.selectedUserName {
+    font-size: 16pt;
+}
+
+.user_info_heading {
+    background-color: rgba(128,0,0,0.1);
+}
+
+.user_info_current_statuses {
+    background-color: rgba(0,128,0,0.1);
+}
+
+.user_info_add_statuses {
+    background-color: rgba(0,0,128,0.1);
+}
+
+.section_title {
+    font-weight: bold;
+    font-size: 10pt;
+    padding-top: 5px;
+}
+
+.status_controls {
+    font-size: 8pt;
+}
+
+.status_table_row {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.user_status {
+    font-size: 10pt;
+    padding-left: 10px;
+}
