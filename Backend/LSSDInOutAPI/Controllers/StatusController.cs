@@ -23,27 +23,38 @@ namespace LSSDInOutAPI.Controllers
         {
             return _statusRepository.GetAll();
         }
-
         
         // GET: api/Status/5
-        public List<Status> Get(int id)
+        public Status Get(int id)
         {
-            return _statusRepository.GetAllForPerson(id);
+            return _statusRepository.Get(id);
         }
 
         // POST: api/Status
-        public void Post([FromBody]string value)
-        {
+        public void Post([FromBody]Status value)
+        {            
+            _statusRepository.AddStatus(value);
         }
 
         // PUT: api/Status/5
-        public void Put(int id, [FromBody]string value)
+        public HttpResponseMessage Put(int id, [FromBody]Status value)
         {
+            // Update the status
+            if (_statusRepository.Get(id) != null)
+            {
+                _statusRepository.DeleteStatus(value);
+                _statusRepository.AddStatus(value);                
+                return Request.CreateResponse(HttpStatusCode.OK, value);
+            } else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Status with id " + id + " not found");
+            }            
         }
 
         // DELETE: api/Status/5
         public void Delete(int id)
         {
+            _statusRepository.DeleteStatus(id);
         }
     }
 }

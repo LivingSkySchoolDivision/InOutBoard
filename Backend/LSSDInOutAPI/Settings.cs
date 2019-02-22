@@ -12,7 +12,13 @@ namespace LSSDInOutAPI
         {
             get
             {
-                return ConfigurationManager.ConnectionStrings["InOutDatabase"].ConnectionString;
+                try
+                {
+                    return ConfigurationManager.ConnectionStrings["InOutDatabase"].ConnectionString;
+                } catch(Exception ex)
+                {
+                    throw new Exception("Missing connection string: InOutDatabase", ex);
+                }
             }
         }
     }

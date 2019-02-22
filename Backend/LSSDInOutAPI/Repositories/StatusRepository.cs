@@ -13,8 +13,7 @@ namespace LSSDInOutAPI.Repositories
     {
         private readonly string _dbConnectionString;
         private const string SQL = "SELECT * FROM PersonStatuses";
-
-
+        
         public StatusRepository(string dbConnectionString)
         {
             this._dbConnectionString = dbConnectionString;
@@ -24,6 +23,7 @@ namespace LSSDInOutAPI.Repositories
         {
             Status returnMe = new Status()
             {
+                StatusID = dataReader["StatusID"].ToString().Trim().ToInt(),
                 PersonID = dataReader["PersonID"].ToString().Trim().ToInt(),
                 Expires = dataReader["Expires"].ToString().Trim().ToDateTime(),
                 Content = dataReader["StatusContent"].ToString().Trim(),
@@ -66,8 +66,7 @@ namespace LSSDInOutAPI.Repositories
             return returnMe.ToList();
         }
 
-
-        public Status GetActiveForPerson(int ID)
+        public Status GetActiveForPerson(int PersonID)
         {
             using (SqlConnection connection = new SqlConnection(_dbConnectionString))
             {
@@ -77,7 +76,7 @@ namespace LSSDInOutAPI.Repositories
                     CommandType = CommandType.Text,
                     CommandText = SQL + " WHERE PersonID=@USERID ORDER BY Expires ASC;"
                 };
-                sqlCommand.Parameters.AddWithValue("USERID", ID);
+                sqlCommand.Parameters.AddWithValue("USERID", PersonID);
                 sqlCommand.Connection.Open();
                 SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 
@@ -99,7 +98,39 @@ namespace LSSDInOutAPI.Repositories
             return null;
         }
 
-        public List<Status> GetAllForPerson(int id)
+        public Status Get(int StatusID)
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = SQL + " WHERE StatusID=@STATUSID"
+                };
+                sqlCommand.Parameters.AddWithValue("STATUSID", StatusID);
+                sqlCommand.Connection.Open();
+                SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
+
+                if (dbDataReader.HasRows)
+                {
+                    while (dbDataReader.Read())
+                    {
+                        Status u = dataReadyToStatus(dbDataReader);
+                        if (u != null)
+                        {
+                            return u;
+                        }
+                    }
+                }
+
+                sqlCommand.Connection.Close();
+            }
+
+            return null;
+        }
+
+        public List<Status> GetAllForPerson(int PersonID)
         {
             List<Status> returnMe = new List<Status>();
 
@@ -111,7 +142,7 @@ namespace LSSDInOutAPI.Repositories
                     CommandType = CommandType.Text,
                     CommandText = SQL + " WHERE PersonID=@USERID ORDER BY Expires ASC;"
                 };
-                sqlCommand.Parameters.AddWithValue("USERID", id);
+                sqlCommand.Parameters.AddWithValue("USERID", PersonID);
                 sqlCommand.Connection.Open();
                 SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 
@@ -131,6 +162,86 @@ namespace LSSDInOutAPI.Repositories
             }
 
             return returnMe.ToList();
+        }
+                
+        public void DeleteExpiredStatuses()
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
+                };
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
+        }
+
+        public void AddStatus(Status status)
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE);"
+                };
+                sqlCommand.Parameters.AddWithValue("PERSONID", status.PersonID);
+                sqlCommand.Parameters.AddWithValue("EXPIRYDATE", status.Expires);
+                sqlCommand.Parameters.AddWithValue("STATUSCONTENT", status.Content);
+                sqlCommand.Parameters.AddWithValue("STATUSTYPE", status.StatusType);
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
+        }
+
+        public void ClearStatusesForPerson(Person person)
+        {
+            ClearStatusesForPerson(person.ID);
+        }
+
+        public void ClearStatusesForPerson(int PersonID)
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM PersonStatuses WHERE PersonID=@PERSONID;"
+                };
+                sqlCommand.Parameters.AddWithValue("PERSONID", PersonID);
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
+        }
+
+        public void DeleteStatus(Status status)
+        {
+            DeleteStatus(status.StatusID);
+        }
+
+        public void DeleteStatus(int StatusID)
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM PersonStatuses WHERE StatusID=@StatusID;"
+                };
+                sqlCommand.Parameters.AddWithValue("USERID", StatusID);
+                sqlCommand.Connection.Open();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Connection.Close();
+            }
         }
 
     }
