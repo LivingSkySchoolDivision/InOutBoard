@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+	padding: 0;
+	margin: 0;
+	color: white;
+	background-color: #222222;	
+    font-family: 'Roboto', sans-serif;
+}
+
+.ipad_sized_page_container {
+    width: 768px;
+    height: 1024px;
+    overflow: scroll;
+}
+
+/* Person list */ 
+.person {
+	margin: 5px;
+	position: relative;
+	min-height: 102px;
+}
+
+.person_name {
+	display: table-cell;
+	height: 100px;
+	font-size: 40px;
+	vertical-align: middle;
+	padding-left: 10px;
+}
+
+.person_buttons {
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: inline-block;
+	background-color: rgba(0,0,0,0.5);
+}
+
+.person_button {
+	border: 1px solid rgba(0,0,0,0.3);
+	background-color: rgba(255,255,255);
+	color: black;
+	display: inline-block;
+	margin-right: 10px;
+	font-weight: bold;
+	font-size: 30px;
+	border-radius: 3px;
+}
+
+.person_button_contents {
+	display: table-cell;
+	width: 100px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.person_button_dim {
+	opacity: 0.25;
+}
+.person_button_active {
+	opacity: 1;
+}
+
+.checkmark {
+	color: green;
+	font-size: 175%;
+}
+
+.rotate {
+	-webkit-animation: rotation 1s infinite linear;
+}
+
+
+@-webkit-keyframes rotation {
+	from {
+			-webkit-transform: rotate(0deg);
+	}
+	to {
+			-webkit-transform: rotate(359deg);
+	}
+}
