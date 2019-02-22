@@ -193,12 +193,13 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE);"
+                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, @LASTMODIFIED);"
                 };
                 sqlCommand.Parameters.AddWithValue("PERSONID", status.PersonID);
                 sqlCommand.Parameters.AddWithValue("EXPIRYDATE", status.Expires);
                 sqlCommand.Parameters.AddWithValue("STATUSCONTENT", status.Content);
                 sqlCommand.Parameters.AddWithValue("STATUSTYPE", status.StatusType);
+                sqlCommand.Parameters.AddWithValue("LASTMODIFIED", DateTime.Now);
                 sqlCommand.Connection.Open();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Connection.Close();
