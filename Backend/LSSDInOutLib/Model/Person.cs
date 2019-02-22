@@ -11,6 +11,22 @@ namespace LSSDInOutLib.Model
         public string LastName { get; set; }
         public bool IsEnabled { get; set; }
 
+        public string DisplayName
+        {
+            get
+            {
+                return this.FirstName + " " + this.LastName;
+            }
+        }
+
+        public string DisplayNameLastNameFirst
+        {
+            get
+            {
+                return this.LastName + ", " + this.FirstName;
+            }
+        }
+
         public Person()
         {
         }
