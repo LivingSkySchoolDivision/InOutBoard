@@ -33,6 +33,10 @@ namespace LSSDInOutAPI.Controllers
         // POST: api/Status
         public void Post([FromBody]Status value)
         {            
+            if (value == null)
+            {
+                throw new Exception("value is null");
+            }
             _statusRepository.AddStatus(value);
         }
 

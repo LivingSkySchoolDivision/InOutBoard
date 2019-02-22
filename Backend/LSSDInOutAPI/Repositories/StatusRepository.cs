@@ -182,6 +182,11 @@ namespace LSSDInOutAPI.Repositories
 
         public void AddStatus(Status status)
         {
+            if (status == null)
+            {
+                throw new Exception("Given object was null");
+            }
+
             using (SqlConnection connection = new SqlConnection(_dbConnectionString))
             {
                 SqlCommand sqlCommand = new SqlCommand
