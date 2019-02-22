@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace LSSDInOutAPI.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class StatusController : ApiController
     {
         private StatusRepository _statusRepository;
@@ -40,7 +42,7 @@ namespace LSSDInOutAPI.Controllers
             _statusRepository.AddStatus(value);
         }
 
-        // PUT: api/Status/5
+        // PUT: api/Status/5        
         public HttpResponseMessage Put(int id, [FromBody]Status value)
         {
             // Update the status

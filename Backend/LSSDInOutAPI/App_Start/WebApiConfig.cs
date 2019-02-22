@@ -16,6 +16,8 @@ namespace LSSDInOutAPI
             config.Formatters.Add(new JsonMediaTypeFormatter());
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
 
+            config.EnableCors();
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
