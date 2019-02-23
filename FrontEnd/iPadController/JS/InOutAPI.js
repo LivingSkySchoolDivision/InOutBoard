@@ -18,7 +18,7 @@ function buildPersonHTML(person) {
 	content += "<div class=\"person_buttons\">";	
 	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_in_contents\" class=\"person_button_contents\" onClick=\"setStatus_In(" + person.ID + ")\">IN</div></div>";
 	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_out_contents\" class=\"person_button_contents\" onClick=\"setStatus_Out(" + person.ID + ")\">OUT</div></div>";
-	content += "<div id=\"person_button_" + person.ID + "_custom\" class=\"person_button person_button_active\"><div id=\"person_button_" + person.ID + "_custom_contents\" class=\"person_button_contents\">...</div></div>";
+	content += "<div id=\"person_button_" + person.ID + "_custom\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_custom_contents_small\" class=\"person_button_contents\">...</div></div>";
 	content += "</div>";
 
 	content += "</div>";
@@ -56,7 +56,7 @@ function showCheckMarkAnimation(divID) {
 	}
 }
 
-function JSONPostStatus(status, personID) {
+function JSONPostStatus(status, personID, callerDiv) {
 	$.ajax({
 		url:'https://inoutapi.lskysd.ca/api/status/',
 		method:'POST',			
@@ -64,7 +64,7 @@ function JSONPostStatus(status, personID) {
 		data:JSON.stringify(status),
 		contentType:"application/json",				
 		success: function(data, status, xhr) {
-			showCheckMarkAnimation("person_button_" + personID + "_in_contents");
+			showCheckMarkAnimation(callerDiv);
 		},
 		error: function(data, status, xhr) {
 			console.log("Error:");
@@ -75,7 +75,9 @@ function JSONPostStatus(status, personID) {
 
 // Function to UPDATE the user list, without redrawing it?
 function setStatus_In(personID) {
-	showLoadingAnimation("person_button_" + personID + "_in_contents");
+	var callerDiv = "person_button_" + personID + "_in_contents"
+
+	showLoadingAnimation(callerDiv);
 
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
@@ -94,11 +96,13 @@ function setStatus_In(personID) {
 		StatusType: 1
 	}
 
-	JSONPostStatus(newStatus, personID);
+	JSONPostStatus(newStatus, personID, callerDiv);
 	
 }
 
-function setStatus_Out(personID) {	
+function setStatus_Out(personID) {
+	var callerDiv = "person_button_" + personID + "_out_contents"
+	showLoadingAnimation(callerDiv);	
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
 	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
@@ -117,5 +121,5 @@ function setStatus_Out(personID) {
 		StatusType: 2
 	}
 
-	JSONPostStatus(newStatus, personID);
+	JSONPostStatus(newStatus, personID, callerDiv);
 }

@@ -38,8 +38,8 @@ body {
 }
 
 .person_button {
-	border: 1px solid rgba(0,0,0,0.3);
-	background-color: rgba(255,255,255);
+	border: 1px solid rgba(0,0,0,0.3);	
+	background-color: rgba(255,255,255,1);
 	color: black;
 	display: inline-block;
 	margin-right: 10px;
@@ -51,6 +51,14 @@ body {
 .person_button_contents {
 	display: table-cell;
 	width: 100px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.person_button_contents_small {
+	display: table-cell;
+	width: 50px;
 	height: 100px;
 	vertical-align: middle;
 	text-align: center;
