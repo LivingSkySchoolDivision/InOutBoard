@@ -210,13 +210,6 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <None Include="Web.config.template" />
-    <None Include="Web.config.Debug.template">
-      <DependentUpon>Web.config.template</DependentUpon>
-    </None>
-    <None Include="Web.config.Release.template">
-      <DependentUpon>Web.config.template</DependentUpon>
-    </None>
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="Content\Site.css" />
     <Content Include="Views\Web.config" />
@@ -224,6 +217,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="web.config.template" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
