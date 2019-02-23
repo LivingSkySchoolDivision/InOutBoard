@@ -1,5 +1,44 @@
 var INOUTAPIRoot = "https://inoutapi.lskysd.ca/api/";
 
+function buildControlBar(person) {
+	var content = "";
+	var customStatusText = "";
+	if (person.HasStatus == true) {
+		if (person.CurrentStatus.Content.length > 0) {
+			if ((person.CurrentStatus.Content != "In") && (person.CurrentStatus.Content != "Out")) {
+				customStatusText = person.CurrentStatus.Content;
+			}
+		}
+	}
+	content += "<div class=\"control_bar hidden\" id=\"control_bar_" + person.ID + "\">";
+	content += "<div id=\"control_bar_button_" + person.ID + "_busy\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_busy_contents\" class=\"control_bar_button_contents\" onClick=\"setStatus_Busy(" + person.ID + ")\">BUSY</div></div>";
+	content += "<input type=\"text\" class=\"control_bar_text_input\" value=\"" + customStatusText + "\"' id=\"custom_input_" + person.ID + "\"/>";
+	content += "<div id=\"control_bar_button_" + person.ID + "_submit\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_customin_contents\" class=\"control_bar_button_contents button_small_text\" onClick=\"setStatus_CustomIn(" + person.ID + ")\">CUSTOM IN</div></div>";
+	content += "<div id=\"control_bar_button_" + person.ID + "_submit\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_customout_contents\" class=\"control_bar_button_contents button_small_text\" onClick=\"setStatus_CustomOut(" + person.ID + ")\">CUSTOM OUT</div></div>";
+	
+	content += "</div>";
+
+	return content;
+}
+
+function toggleControlBar(personID) {
+	if ($("#control_bar_" + personID).hasClass("hidden")) {
+		openControlBar(personID);
+	} else {
+		hideControlBar(personID);
+	}
+}
+
+function openControlBar(personID) {
+	$("#control_bar_" + personID).slideDown();
+	$("#control_bar_" + personID).removeClass("hidden");
+}
+
+function hideControlBar(personID) {
+	$("#control_bar_" + personID).slideUp();
+	$("#control_bar_" + personID).addClass("hidden");
+}
+
 function buildPersonHTML(person) {
 	var content = "";
 
@@ -12,8 +51,10 @@ function buildPersonHTML(person) {
 	content += "<div class=\"person_buttons\">";	
 	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_in_contents\" class=\"person_button_contents\" onClick=\"setStatus_In(" + person.ID + ")\">IN</div></div>";
 	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_out_contents\" class=\"person_button_contents\" onClick=\"setStatus_Out(" + person.ID + ")\">OUT</div></div>";
-	content += "<div id=\"person_button_" + person.ID + "_custom\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_custom_contents\" class=\"person_button_contents_small\">...</div></div>";
+	content += "<div id=\"person_button_" + person.ID + "_custom\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_custom_contents\" class=\"person_button_contents_small\" onClick=\"toggleControlBar(" + person.ID + ")\">...</div></div>";
 	content += "</div>";
+
+	content += buildControlBar(person);
 
 	content += "</div>";
 
@@ -25,8 +66,9 @@ function setPersonUnknown(personID) {
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
 	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
+	$("#person_button_" + personID +"_out").removeClass("person_button_busy");	
 	$("#person_button_" + personID +"_in").addClass("person_button_dim");
 	$("#person_button_" + personID +"_out").addClass("person_button_dim");
 
@@ -37,7 +79,9 @@ function setPersonIn(personID) {
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
 	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
+	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
 
 	$("#person_button_" + personID +"_in").addClass("person_button_active");
 	$("#person_button_" + personID +"_out").addClass("person_button_dim");	
@@ -48,7 +92,9 @@ function setPersonOut(personID) {
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
 	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
+	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
 
 	$("#person_button_" + personID +"_in").addClass("person_button_dim");
 	$("#person_button_" + personID +"_out").addClass("person_button_active");	
@@ -59,7 +105,9 @@ function setPersonBusy(personID) {
 	$("#person_button_" + personID +"_in").removeClass("person_button_active");
 	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
 	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
+	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
 
 
 	$("#person_button_" + personID +"_in").addClass("person_button_busy");
@@ -74,8 +122,7 @@ function setPersonBusy(personID) {
 function updatePersonStatus(personID, status) {
 	if (status == null) {
 		return;
-	}
-	
+	}	
 	
 	switch(status.StatusType) {
 		case 0:
@@ -94,6 +141,8 @@ function updatePersonStatus(personID, status) {
 			setPersonUnknown(personID);			
 			break;
 	}
+
+	hideControlBar(personID);
 }
 
 function updateAllPersonStatus() {
@@ -198,4 +247,61 @@ function setStatus_Out(personID) {
 
 	// Send the new status to the API
 	JSONPostStatus(newStatus, personID, callerDiv);
+}
+
+function setStatus_Busy(personID) {
+	var callerDiv = "control_bar_button_" + personID + "_busy_contents"
+
+	showLoadingAnimation(callerDiv);
+
+	// Build a status object to send
+	var today = new Date(); // Quick in and out statuses expire at the end of the day		
+	var newStatus = {
+		PersonID: personID,
+		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
+		Content: "In",
+		StatusType: 3
+	}
+
+	// Send the new status to the API
+	JSONPostStatus(newStatus, personID, callerDiv);	
+}
+
+
+function setStatus_CustomOut(personID) {
+	var customStatusContent = $("#custom_input_" + personID).val().trim();
+	var callerDiv = "control_bar_button_" + personID + "_customout_contents"
+
+	showLoadingAnimation(callerDiv);
+
+	// Build a status object to send
+	var today = new Date(); // Quick in and out statuses expire at the end of the day		
+	var newStatus = {
+		PersonID: personID,
+		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
+		Content: customStatusContent,
+		StatusType: 2
+	}
+
+	// Send the new status to the API
+	JSONPostStatus(newStatus, personID, callerDiv);	
+}
+
+function setStatus_CustomIn(personID) {
+	var customStatusContent = $("#custom_input_" + personID).val().trim();
+	var callerDiv = "control_bar_button_" + personID + "_customin_contents"
+
+	showLoadingAnimation(callerDiv);
+
+	// Build a status object to send
+	var today = new Date(); // Quick in and out statuses expire at the end of the day		
+	var newStatus = {
+		PersonID: personID,
+		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
+		Content: customStatusContent,
+		StatusType: 1
+	}
+
+	// Send the new status to the API
+	JSONPostStatus(newStatus, personID, callerDiv);	
 }
