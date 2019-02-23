@@ -62,7 +62,7 @@ namespace LSSDInOutAPI.Repositories
                 sqlCommand.Connection.Close();
             }
 
-            return returnMe.OrderBy(u => u.LastName).ThenBy(u => u.FirstName).ToList();
+            return returnMe.OrderBy(u => u.FirstName).ThenBy(u => u.LastName).ToList();
         }
 
 
