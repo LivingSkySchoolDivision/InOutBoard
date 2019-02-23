@@ -1,11 +1,5 @@
 var INOUTAPIRoot = "https://inoutapi.lskysd.ca/api/";
 
-// Status Types
-//  0 Unknown
-//  1 IN
-//  2 OUT
-//  3 BUSY
-
 function buildPersonHTML(person) {
 	var content = "";
 
@@ -26,11 +20,105 @@ function buildPersonHTML(person) {
 	return content;
 }
 
-function createUserList(intoThisContainer) {
+function setPersonUnknown(personID) {
+	// Reset status CSS - don't assume it's in a specific state
+	$("#person_button_" + personID +"_in").removeClass("person_button_active");
+	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+
+	$("#person_button_" + personID +"_in").addClass("person_button_dim");
+	$("#person_button_" + personID +"_out").addClass("person_button_dim");
+
+}
+
+function setPersonIn(personID) {
+	// Reset status CSS - don't assume it's in a specific state
+	$("#person_button_" + personID +"_in").removeClass("person_button_active");
+	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+
+	$("#person_button_" + personID +"_in").addClass("person_button_active");
+	$("#person_button_" + personID +"_out").addClass("person_button_dim");	
+}
+
+function setPersonOut(personID) {
+	// Reset status CSS - don't assume it's in a specific state
+	$("#person_button_" + personID +"_in").removeClass("person_button_active");
+	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+
+	$("#person_button_" + personID +"_in").addClass("person_button_dim");
+	$("#person_button_" + personID +"_out").addClass("person_button_active");	
+
+}
+
+function setPersonBusy(personID) {
+	$("#person_button_" + personID +"_in").removeClass("person_button_active");
+	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
+	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
+	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
+
+
+	$("#person_button_" + personID +"_in").addClass("person_button_busy");
+	$("#person_button_" + personID +"_out").addClass("person_button_dim");	
+}
+
+// Status Types
+//  0 Unknown
+//  1 IN
+//  2 OUT
+//  3 BUSY
+function updatePersonStatus(personID, status) {
+	if (status == null) {
+		return;
+	}
+	
+	
+	switch(status.StatusType) {
+		case 0:
+			setPersonUnknown(personID);			
+			break;
+		case 1:
+			setPersonIn(personID);			
+			break;
+		case 2:
+			setPersonOut(personID);			
+			break;
+		case 3:
+			setPersonBusy(personID);			
+			break;
+		default:
+			setPersonUnknown(personID);			
+			break;
+	}
+}
+
+function updateAllPersonStatus() {
 	$("#" + intoThisContainer).empty();
 	$.getJSON(INOUTAPIRoot + "/People/", function(data) {		
 		$.each(data, function(categoryIndex, person) {
+			if (person.HasStatus == true) {
+				updatePersonStatus(person.ID, person.CurrentStatus);
+			}
+		}); // each
+	}); // getJSON
+}
+
+function createUserList(intoThisContainer) {
+	$.getJSON(INOUTAPIRoot + "/PeopleWithStatus/", function(data) {	
+		$("#" + intoThisContainer).empty();	
+		$.each(data, function(categoryIndex, person) {
+			
+			// Add the user's HTML
 			$("#" + intoThisContainer).append(buildPersonHTML(person));
+
+			// Update the user's status display
+			if (person.HasStatus == true) {				
+				updatePersonStatus(person.ID, person.CurrentStatus);
+			}
 		}); // each
 	}); // getJSON
 }
@@ -63,8 +151,9 @@ function JSONPostStatus(status, personID, callerDiv) {
 		dataType:'json',
 		data:JSON.stringify(status),
 		contentType:"application/json",				
-		success: function(data, status, xhr) {
+		success: function() {
 			showCheckMarkAnimation(callerDiv);
+			updatePersonStatus(personID, status);
 		},
 		error: function(data, status, xhr) {
 			console.log("Error:");
@@ -79,14 +168,6 @@ function setStatus_In(personID) {
 
 	showLoadingAnimation(callerDiv);
 
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-
-	$("#person_button_" + personID +"_in").addClass("person_button_active");
-	$("#person_button_" + personID +"_out").addClass("person_button_dim");	
-
 	// Build a status object to send
 	var today = new Date(); // Quick in and out statuses expire at the end of the day		
 	var newStatus = {
@@ -96,6 +177,7 @@ function setStatus_In(personID) {
 		StatusType: 1
 	}
 
+	// Send the new status to the API
 	JSONPostStatus(newStatus, personID, callerDiv);
 	
 }
@@ -103,23 +185,17 @@ function setStatus_In(personID) {
 function setStatus_Out(personID) {
 	var callerDiv = "person_button_" + personID + "_out_contents"
 	showLoadingAnimation(callerDiv);	
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");	
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");	
-
-	$("#person_button_" + personID +"_in").addClass("person_button_dim");
-	$("#person_button_" + personID +"_out").addClass("person_button_active");	
 	
+
 	// Build a status object to send
-	var expiryDate = new Date(); // Quick in and out statuses expire at the end of the day
-	expiryDate.setHours(23,59,59,999);
+	var today = new Date(); // Quick in and out statuses expire at the end of the day	
 	var newStatus = {
-		PersonID: personID,
-		Expires: expiryDate,
+		PersonID: personID,	
+		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
 		Content: "Out",
 		StatusType: 2
 	}
 
+	// Send the new status to the API
 	JSONPostStatus(newStatus, personID, callerDiv);
 }
