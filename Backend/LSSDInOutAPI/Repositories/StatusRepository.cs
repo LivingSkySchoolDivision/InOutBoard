@@ -74,9 +74,10 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE PersonID=@USERID ORDER BY Expires ASC;"
+                    CommandText = SQL + " WHERE PersonID=@USERID AND @CURRENTTIME<Expires ORDER BY Expires ASC, LastModified DESC;"
                 };
                 sqlCommand.Parameters.AddWithValue("USERID", PersonID);
+                sqlCommand.Parameters.AddWithValue("CURRENTTIME", DateTime.Now);
                 sqlCommand.Connection.Open();
                 SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 
