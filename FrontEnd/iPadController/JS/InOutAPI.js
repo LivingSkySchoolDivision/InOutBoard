@@ -1,43 +1,8 @@
 var INOUTAPIRoot = "https://inoutapi.lskysd.ca/api/";
 
-function buildControlBar(person) {
-	var content = "";
-	var customStatusText = "";
-	if (person.HasStatus == true) {
-		if (person.CurrentStatus.Content.length > 0) {
-			if ((person.CurrentStatus.Content != "In") && (person.CurrentStatus.Content != "Out")) {
-				customStatusText = person.CurrentStatus.Content;
-			}
-		}
-	}
-	content += "<div class=\"control_bar hidden\" id=\"control_bar_" + person.ID + "\">";
-	content += "<div id=\"control_bar_button_" + person.ID + "_busy\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_busy_contents\" class=\"control_bar_button_contents\" onClick=\"setStatus_Busy(" + person.ID + ")\">BUSY</div></div>";
-	content += "<input type=\"text\" class=\"control_bar_text_input\" value=\"" + customStatusText + "\"' id=\"custom_input_" + person.ID + "\"/>";
-	content += "<div id=\"control_bar_button_" + person.ID + "_submit\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_customin_contents\" class=\"control_bar_button_contents button_small_text\" onClick=\"setStatus_CustomIn(" + person.ID + ")\">CUSTOM IN</div></div>";
-	content += "<div id=\"control_bar_button_" + person.ID + "_submit\" class=\"control_bar_button\"><div id=\"control_bar_button_" + person.ID + "_customout_contents\" class=\"control_bar_button_contents button_small_text\" onClick=\"setStatus_CustomOut(" + person.ID + ")\">CUSTOM OUT</div></div>";
-	
-	content += "</div>";
-
-	return content;
-}
-
-function toggleControlBar(personID) {
-	if ($("#control_bar_" + personID).hasClass("hidden")) {
-		openControlBar(personID);
-	} else {
-		hideControlBar(personID);
-	}
-}
-
-function openControlBar(personID) {
-	$("#control_bar_" + personID).slideDown();
-	$("#control_bar_" + personID).removeClass("hidden");
-}
-
-function hideControlBar(personID) {
-	$("#control_bar_" + personID).slideUp();
-	$("#control_bar_" + personID).addClass("hidden");
-}
+/* ************************************************************** */
+/* * HTML part builders                                         * */
+/* ************************************************************** */
 
 function buildPersonHTML(person) {
 	var content = "";
@@ -49,17 +14,164 @@ function buildPersonHTML(person) {
 	content += "</div>";
 
 	content += "<div class=\"person_buttons\">";	
-	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_in_contents\" class=\"person_button_contents\" onClick=\"setStatus_In(" + person.ID + ")\">IN</div></div>";
-	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_out_contents\" class=\"person_button_contents\" onClick=\"setStatus_Out(" + person.ID + ")\">OUT</div></div>";
-	content += "<div id=\"person_button_" + person.ID + "_custom\" class=\"person_button person_button_dim\"><div id=\"person_button_" + person.ID + "_custom_contents\" class=\"person_button_contents_small\" onClick=\"toggleControlBar(" + person.ID + ")\">...</div></div>";
+	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim\"><div id=\"btnPersonStatusIn_" + person.ID +  "\" class=\"person_button_contents\" onClick=\"onclick_btnPersonStatusIn(" + person.ID + ")\">IN</div></div>";
+	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim\"><div id=\"btnPersonStatusOut_" + person.ID + "\" class=\"person_button_contents\" onClick=\"onclick_btnPersonStatusOut(" + person.ID + ")\">OUT</div></div>";
 	content += "</div>";
 
-	content += buildControlBar(person);
+	content += buildOutOptionsBar(person);
 
 	content += "</div>";
 
 	return content;
 }
+
+function buildOutOptionsBar(person) {
+	var content = "";
+	var customStatusText = "";
+	if (person.HasStatus == true) {
+		if (person.CurrentStatus.Content.length > 0) {
+			if ((person.CurrentStatus.Content != "In") && (person.CurrentStatus.Content != "Out")) {
+				customStatusText = person.CurrentStatus.Content;
+			}
+		}
+	}
+	content += "<div class=\"options_bar hidden\" id=\"out_options_bar_" + person.ID + "\">";
+	content += "<div class=\"options_bar_outer_content_container\">";
+	content += "<div class=\"options_bar_inner_content_container\">";
+	content += "<input type=\"text\" class=\"custom_status_input\" value=\"" + customStatusText + "\"' id=\"custom_out_status_" + person.ID + "\"/>";
+	content += "<div class=\"options_bar_button\"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
+	content += "</div>";
+	content += "</div>";
+	content += "</div>";	
+	content += buildOutDurationOptionsBar(person);
+	return content;
+}
+
+function buildOutDurationOptionsBar(person) {
+	var content = "";
+	var customStatusText = "";
+	if (person.HasStatus == true) {
+		if (person.CurrentStatus.Content.length > 0) {
+			if ((person.CurrentStatus.Content != "In") && (person.CurrentStatus.Content != "Out")) {
+				customStatusText = person.CurrentStatus.Content;
+			}
+		}
+	}
+	content += "<div class=\"second_level_options_bar hidden\" id=\"out_duration_options_bar_" + person.ID + "\">";
+	content += "<div class=\"options_bar_outer_content_container\">";
+	content += "<div class=\"options_bar_inner_content_container\">";
+	content += "For the next ";
+	
+	content += "<input style=\"vertical-align: middle;\" type=\"tel\" pattern=\"[0-9]*\" class=\"control_bar_days_input\" value=\"1\"' id=\"txtDays_" + person.ID + "\"/>";
+
+	content += " days";
+	content += "</div>";
+	content += "</div>";
+	content += "</div>";
+
+	return content;
+}
+
+
+/* ************************************************************** */
+/* * Button handling logic                                      * */
+/* ************************************************************** */
+
+function onclick_btnPersonStatusIn(personID) {
+	alert("IN");
+}
+
+function onclick_btnPersonStatusOut(personID) {
+	toggleOutOptionsBar(personID);
+}
+
+function onclick_btnOutDuration(personID) {
+	// Open the duration options bar
+	toggleOutDurationsOptionsBar(personID);		
+}
+
+function onclick_btnSetOutStatus(personID) {
+	alert("out status");
+}
+
+/* ************************************************************** */
+/* * Options bar Hide / Show Logic                              * */
+/* ************************************************************** */
+
+function showOutOptionsBar(personID) {
+	var divID = "out_options_bar_" + personID;
+	$("#" + divID).slideDown();
+	$("#" + divID).removeClass("hidden");
+
+}
+
+function hideOutOptionsBar(personID) {
+	var divID = "out_options_bar_" + personID;
+	$("#" + divID).slideUp();
+	$("#" + divID).addClass("hidden");
+
+}
+
+function showOutDurationBar(personID) {
+	var divID = "out_duration_options_bar_" + personID;
+	$("#" + divID).slideDown();
+	$("#" + divID).removeClass("hidden");
+}
+
+function hideOutDurationBar(personID) {
+	var divID = "out_duration_options_bar_" + personID;
+	$("#" + divID).slideUp();
+	$("#" + divID).addClass("hidden");
+
+}
+
+function toggleOutOptionsBar(personID) {
+	var divID = "out_options_bar_" + personID;
+
+	if ($("#" + divID).hasClass("hidden")) {
+		showOutOptionsBar(personID);
+	} else {
+		hideOutDurationBar(personID);
+		hideOutOptionsBar(personID);
+	}
+}
+
+function toggleOutDurationsOptionsBar(personID) {
+	var divID = "out_duration_options_bar_" + personID;
+	
+	if ($("#" + divID).hasClass("hidden")) {
+		showOutDurationBar(personID);
+	} else {
+		hideOutDurationBar(personID);
+	}
+}
+
+
+/* ************************************************************** */
+/* * Options bar logic                                          * */
+/* ************************************************************** */
+
+function addDay(personID) {
+	var divID = "txtDays_" + personID;
+	var numDays = $("#" + divID).val();
+	numDays++;
+	$("#" + divID).val(numDays);
+		
+}
+
+function removeDay(personID) {
+	var divID = "txtDays_" + personID;
+	var numDays = $("#" + divID).val();
+	numDays--;
+	if (numDays < 1) {
+		numDays = 1;
+	}
+	$("#" + divID).val(numDays);
+}
+
+/* ************************************************************** */
+/* * Visual status setting logic                                * */
+/* ************************************************************** */
 
 function setPersonUnknown(personID) {
 	// Reset status CSS - don't assume it's in a specific state
@@ -98,7 +210,6 @@ function setPersonOut(personID) {
 
 	$("#person_button_" + personID +"_in").addClass("person_button_dim");
 	$("#person_button_" + personID +"_out").addClass("person_button_active");	
-
 }
 
 function setPersonBusy(personID) {
@@ -142,7 +253,8 @@ function updatePersonStatus(personID, status) {
 			break;
 	}
 
-	hideControlBar(personID);
+	//hideOutControlBar(personID);
+	//hideTimeControlBar(personID);
 }
 
 function updateAllPersonStatus() {
@@ -155,6 +267,11 @@ function updateAllPersonStatus() {
 		}); // each
 	}); // getJSON
 }
+
+
+/* ************************************************************** */
+/* * AJAX / JSON Logic                                          * */
+/* ************************************************************** */
 
 function createUserList(intoThisContainer) {
 	$.getJSON(INOUTAPIRoot + "/PeopleWithStatus/", function(data) {	
@@ -178,8 +295,7 @@ function showLoadingAnimation(divID) {
 }
 
 function removeLoadingAnimation(divID) {
- 	$("#" + divID).removeClass("rotate");
-
+ 	$("#" + divID).removeClass("rotate"); 	
 }
 
 function showCheckMarkAnimation(divID) {
@@ -211,7 +327,6 @@ function JSONPostStatus(status, personID, callerDiv) {
 	});
 }
 
-// Function to UPDATE the user list, without redrawing it?
 function setStatus_In(personID) {
 	var callerDiv = "person_button_" + personID + "_in_contents"
 
@@ -241,7 +356,7 @@ function setStatus_Out(personID) {
 	var newStatus = {
 		PersonID: personID,	
 		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: "Out",
+		Content: "",
 		StatusType: 2
 	}
 
@@ -250,7 +365,7 @@ function setStatus_Out(personID) {
 }
 
 function setStatus_Busy(personID) {
-	var callerDiv = "control_bar_button_" + personID + "_busy_contents"
+	var callerDiv = "options_bar_button" + personID + "_busy_contents"
 
 	showLoadingAnimation(callerDiv);
 
@@ -259,7 +374,7 @@ function setStatus_Busy(personID) {
 	var newStatus = {
 		PersonID: personID,
 		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: "In",
+		Content: "",
 		StatusType: 3
 	}
 
@@ -267,41 +382,3 @@ function setStatus_Busy(personID) {
 	JSONPostStatus(newStatus, personID, callerDiv);	
 }
 
-
-function setStatus_CustomOut(personID) {
-	var customStatusContent = $("#custom_input_" + personID).val().trim();
-	var callerDiv = "control_bar_button_" + personID + "_customout_contents"
-
-	showLoadingAnimation(callerDiv);
-
-	// Build a status object to send
-	var today = new Date(); // Quick in and out statuses expire at the end of the day		
-	var newStatus = {
-		PersonID: personID,
-		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: customStatusContent,
-		StatusType: 2
-	}
-
-	// Send the new status to the API
-	JSONPostStatus(newStatus, personID, callerDiv);	
-}
-
-function setStatus_CustomIn(personID) {
-	var customStatusContent = $("#custom_input_" + personID).val().trim();
-	var callerDiv = "control_bar_button_" + personID + "_customin_contents"
-
-	showLoadingAnimation(callerDiv);
-
-	// Build a status object to send
-	var today = new Date(); // Quick in and out statuses expire at the end of the day		
-	var newStatus = {
-		PersonID: personID,
-		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: customStatusContent,
-		StatusType: 1
-	}
-
-	// Send the new status to the API
-	JSONPostStatus(newStatus, personID, callerDiv);	
-}

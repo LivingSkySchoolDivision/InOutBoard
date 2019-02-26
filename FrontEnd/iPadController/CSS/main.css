@@ -3,9 +3,12 @@
 /* 
 	Color themes I'm playing with
 	Solarized: bg: rgb(253, 247, 227), fg: #4f5b66;
-
 */
 
+
+/* *********************************************************************** */
+/* * Page elements                                                       * */
+/* *********************************************************************** */
 body {
 	padding: 0;
 	margin: 0;
@@ -15,10 +18,10 @@ body {
 }
 
 .ipad_sized_page_container {	
-	    width: 768px;
-	    margin-left: auto;
-	    margin-right: auto;
-	}
+    width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 @media only screen and (max-width: 800px) {
 	.ipad_sized_page_container {
@@ -27,11 +30,23 @@ body {
 	}
 }
 
-/* Person list */ 
+.loading_text {
+	font-size: 30px;
+	font-weight: bold;
+	width: 100%;
+	height: 100%;
+	padding-top: 50px;
+	text-align: center;
+}
+
+/* *********************************************************************** */
+/* * Person list                                                         * */
+/* *********************************************************************** */
 .person {
 	margin: 5px;
 	position: relative;
 	min-height: 102px;
+	border-bottom: 1px solid rgb(200,200,200);
 }
 
 .person_name {
@@ -43,21 +58,34 @@ body {
     font-weight: bold;
 }
 
+/* *********************************************************************** */
+/* * Person in / out buttons                                             * */
+/* *********************************************************************** */
+
 .person_buttons {
 	position: absolute;
+	background-color: #444444;
 	right: 0;
 	top: 0;
 	display: inline-block;
+	border: 2px solid black	;
+	border-radius: 7px;	
 }
 
 .person_button {
-	border: 1px solid rgba(0,0,0,0.3);	
-	background-color: rgba(255,255,255,1);
 	color: black;
 	display: inline-block;
-	margin-right: 10px;
-	font-weight: bold;
-	border-radius: 3px;
+	font-weight: bold;	
+	border-radius: 5px;
+}
+
+.person_button_dim {
+	color: #606060;
+}
+
+.person_button_active {
+	background-color: rgba(255,255,255,1);
+	opacity: 1;
 }
 
 .person_button_contents {
@@ -69,21 +97,6 @@ body {
 	text-align: center;
 }
 
-.person_button_contents_small {
-	display: table-cell;
-	width: 50px;
-	height: 100px;
-	vertical-align: middle;
-	text-align: center;
-}
-
-.person_button_dim {
-	opacity: 0.25;
-}
-
-.person_button_active {
-	opacity: 1;
-}
 
 .person_button_busy {
 	opacity: 1;
@@ -110,27 +123,61 @@ body {
 	}
 }
 
-.loading_text {
-	font-size: 30px;
-	font-weight: bold;
-	width: 100%;
-	height: 100%;
-	padding-top: 50px;
-	text-align: center;
-}
 
-.control_bar {
-	height: 100px;
+/* *********************************************************************** */
+/* * Slide out options bars                                              * */
+/* *********************************************************************** */
+
+.options_bar {
+	display: table-cell;
+	border: 2px solid black;
+	z-index: 99;
+	height: 200px;
 	border: 0;
-	border-bottom: 2px solid black;
 	padding-bottom: 10px;
 	padding-top: 10px;
 	padding-left: 0px;
 	padding-right: 0px;
-	text-align: right;
+	text-align: center;	
+	font-size: 30px;
+	vertical-align: middle;
 }
 
-.control_bar_button {
+.second_level_options_bar {
+	display: table-cell;
+	border: 2px solid black;
+	z-index: 99;
+	height: 100px;
+	border: 0;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-left: 0px;
+	padding-right: 0px;
+	text-align: center;	
+	font-size: 30px;
+	vertical-align: middle;
+
+}
+
+.options_bar_outer_content_container { 
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+ 	text-align: center; 
+ }
+
+ .options_bar_inner_content_container {
+ 	width: 100%;
+ }
+
+.button_small_text {
+	font-size: 14pt !important;
+}
+
+.options_bar_button {
 	border: 1px solid rgba(0,0,0,0.3);	
 	background-color: rgba(255,255,255,1);
 	color: black;
@@ -138,10 +185,11 @@ body {
 	margin-right: 10px;
 	font-weight: bold;
 	border-radius: 3px;
+	border-radius: 8px;
 
 }
 
-.control_bar_button_contents {
+.options_bar_button_contents {
 	display: table-cell;
 	width: 100px;
 	font-size: 30px;
@@ -150,22 +198,32 @@ body {
 	text-align: center;
 }
 
-.button_small_text {
-	font-size: 14pt !important;
-}
-
 .hidden {
 	display: none;
 }
 
-.control_bar_text_input {
+.custom_status_input {
 	margin: 0;
 	padding: 0;
 	margin-right: 10px;
 	margin-left: 25px;
 	height: 100px;
 	border: 1px solid black;
-	width: 350px;
+	width: 450px;
+	display: inline;
+	vertical-align: top;
+	font-size: 30px;
+}
+
+.control_bar_days_input {
+	margin: 10px;
+	margin-top: 0;
+	padding: 0;
+	margin-right: 15px;
+	height: 100px;
+	border: 1px solid black;
+	width: 100px;
+	text-align: center;
 	display: inline;
 	vertical-align: top;
 	font-size: 30px;
