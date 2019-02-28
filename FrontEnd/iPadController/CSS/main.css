@@ -51,7 +51,7 @@ body {
 /* *********************************************************************** */
 .person {
 	margin: 5px;
-	padding: 0;
+	padding: 0;	
 	padding-bottom: 5px;
 	position: relative;
 	min-height: 102px;
@@ -82,6 +82,7 @@ body {
 	border-radius: 7px;
 	margin: 0;
 	padding: 0;		
+	z-index: 10;
 }
 
 .person_button {
@@ -110,7 +111,6 @@ body {
 	text-align: center;
 }
 
-
 .person_button_busy {
 	opacity: 1;
 	background-color: rgba(255,0,0,0.25);
@@ -136,28 +136,31 @@ body {
 	}
 }
 
-
 /* *********************************************************************** */
 /* * Slide out options bars                                              * */
 /* *********************************************************************** */
 
-.slide_out_options_bar {
-	box-sizing: border-box;
-	z-index: 99;
+.slide_out_options_bar {	
+	z-index: 20;
 	border: 0;
-	border-bottom: 2px solid black;
+	border: 2px solid black;
 	padding: 0;
-	margin: 0;
-	padding-bottom: 10px;
+	margin-top: -2px;
+	padding-bottom: 10px;	
+	background-color: #E5E9F0;
+	color: black;	
+	width: 100%;
+	border-radius: 8px 0 8px 8px ;
 }
 
 .slide_out_options_bar_section {
 	margin-top: 10px;
-	box-sizing: border-box;	
+	box-sizing: border-box;		
 	height: 100px;
 	width: 100%;
 	display: flex;
 	align-items: center;
+	padding: 5px;
 }
 
 .slide_out_options_bar_section_content { 
@@ -179,9 +182,17 @@ body {
 	display: inline-block;
 	margin-right: 10px;
 	font-weight: bold;
-	border-radius: 3px;
 	border-radius: 8px;
+}
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
 .options_bar_button_contents {
@@ -193,6 +204,15 @@ body {
 	text-align: center;
 }
 
+.options_bar_button_open {	
+	color: #E5E9F0;
+}
+
+.options_bar_buttons_open {
+	
+
+}
+
 .hidden {
 	display: none;
 }
@@ -200,16 +220,15 @@ body {
 .set_button {
 	width: 200px;
 	text-align: center;
+	border: 2px solid green;
+	background-color: #88C674;
 }
 
-.custom_status_input {
-	margin: 0;
-	padding: 0;
-	margin-right: 10px;
-	margin-left: 25px;
+.custom_status_input {	
+	padding: 0;	
 	height: 100px;
 	border: 1px solid black;
-	width: 90%;
+	width: 100%;
 	display: inline;
 	vertical-align: top;
 	font-size: 30px;

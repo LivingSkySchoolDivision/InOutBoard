@@ -1,8 +1,15 @@
 /* ************************************************************** */
 /* * HTML part builders                                         * */
 /* ************************************************************** */
+var visiblePeopleIDs = new Array();
+
 
 function buildPersonHTML(person) {	
+
+	if (person.ID > 0) {
+		visiblePeopleIDs.push(person.ID);
+	}
+
 	var content = "";
 
 	content += "<div class=\"person\">";
@@ -11,9 +18,9 @@ function buildPersonHTML(person) {
 	content += person.DisplayName;
 	content += "</div>";
 
-	content += "<div class=\"person_buttons\">";	
-	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim\"><div id=\"btnPersonStatusIn_" + person.ID +  "\" class=\"person_button_contents\" onClick=\"onclick_btnPersonStatusIn(" + person.ID + ")\">IN</div></div>";
-	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim\"><div id=\"btnPersonStatusOut_" + person.ID + "\" class=\"person_button_contents\" onClick=\"onclick_btnPersonStatusOut(" + person.ID + ")\">OUT</div></div>";
+	content += "<div class=\"person_buttons\" id=\"person_buttons_" + person.ID + "\">";	
+	content += "<div id=\"person_button_" + person.ID + "_in\" class=\"person_button person_button_dim noselect\"><div id=\"btnPersonStatusIn_" + person.ID +  "\" class=\"person_button_contents noselect\" onClick=\"onclick_btnPersonStatusIn(" + person.ID + ")\">IN</div></div>";
+	content += "<div id=\"person_button_" + person.ID + "_out\" class=\"person_button person_button_dim noselect\"><div id=\"btnPersonStatusOut_" + person.ID + "\" class=\"person_button_contents noselect\" onClick=\"onclick_btnPersonStatusOut(" + person.ID + ")\">OUT</div></div>";
 	content += "</div>";
 
 	content += buildOutOptionsBar(person);
@@ -48,7 +55,7 @@ function buildOutOptionsBar(person) {
 	content += "<input style=\"vertical-align: middle;\" type=\"tel\" pattern=\"[0-9]*\" class=\"control_days_input\" value=\"1\"' id=\"txtDays_" + person.ID + "\"/>";
 
 	content += " days";
-	content += "&nbsp;&nbsp;&nbsp;&nbsp;<div style=\"vertical-align: middle;\" class=\"options_bar_button \"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents set_button\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
+	content += "&nbsp;&nbsp;&nbsp;&nbsp;<div style=\"vertical-align: middle;\" class=\"options_bar_button  noselect \"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents set_button  noselect\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
 	content += "</div>";
 	content += "</div>";
 
@@ -100,6 +107,7 @@ function userUpdaterCallback(people) {
 
 function onclick_btnPersonStatusIn(personID) {
 	setStatus_In(personID);
+	hideSlideOutOptionsBar(personID);
 }
 
 function onclick_btnPersonStatusOut(personID) {
@@ -107,24 +115,22 @@ function onclick_btnPersonStatusOut(personID) {
 }
 
 function onclick_btnSetOutStatus(personID) {
-	setStatus_Out(personID); // gather the data here, and make the function only do the AJAX stuff
+	setStatus_Out(personID); 	
 	hideSlideOutOptionsBar(personID);
-}
-
-function callbackStatusUpdate(person) {
-	if (person.HasStatus == true) {				
-		updatePersonStatus(person.ID, person.CurrentStatus);			
-	}
 }
 
 /* ************************************************************** */
 /* * Options bar Hide / Show Logic                              * */
 /* ************************************************************** */
-
 function showSlideOutOptionsBar(personID) {
 	var divID = "slide_out_options_bar_" + personID;
 	$("#" + divID).slideDown();
 	$("#" + divID).removeClass("hidden");
+
+	// Stylize the "out" button to indicate its "open"
+	$("#" + "btnPersonStatusOut_" + personID).addClass("options_bar_button_open");
+	$("#" + "btnPersonStatusOut_" + personID).html("▼");
+	$("#" + "person_buttons_" + personID).addClass("options_bar_buttons_open");
 
 }
 
@@ -132,6 +138,12 @@ function hideSlideOutOptionsBar(personID) {
 	var divID = "slide_out_options_bar_" + personID;
 	$("#" + divID).slideUp();
 	$("#" + divID).addClass("hidden");
+
+
+	// Stylize the "out" button to indicate its "closed"
+	$("#" + "btnPersonStatusOut_" + personID).removeClass("options_bar_button_open");
+	$("#" + "person_buttons_" + personID).removeClass("options_bar_buttons_open");
+	$("#" + "btnPersonStatusOut_" + personID).html("OUT");
 
 }
 
@@ -145,6 +157,10 @@ function toggleSlideOutOptionsBar(personID) {
 	}
 }
 
+function hideAllSlideOutOptionsBars() {
+
+}
+
 /* ************************************************************** */
 /* * Visual status setting logic                                * */
 /* ************************************************************** */
@@ -155,6 +171,10 @@ function userUpdaterCallback(people) {
 			updatePersonStatus(person.ID, person.CurrentStatus);			
 		}
 	});	
+}
+
+function setPersonCustomStatus(personID, status) {
+	$("#txtCustomOutStatus_" + personID).val(status);
 }
 
 function setPersonUnknown(personID) {
@@ -237,8 +257,12 @@ function updatePersonStatus(personID, status) {
 			break;
 	}
 
-	//hideOutControlBar(personID);
-	//hideTimeControlBar(personID);
+	// Update their custom text
+	var customStatusText = "";
+	if (status.Content.length > 0) {
+		setPersonCustomStatus(personID, status.Content);
+	}
+	
 }
 
 function setStatus_In(personID) {

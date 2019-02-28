@@ -1,9 +1,7 @@
 var INOUTAPIRoot = "https://inoutapi.lskysd.ca/api/";
 
-function log(string) {
-	var d = new Date();
-	console.log(d + ": " + string);
-	$("#status_log").append("<br>" + string);
+function log(string) {	
+	console.log(string);	
 }
 
 /* ************************************************************** */
