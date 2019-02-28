@@ -74,7 +74,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE PersonID=@USERID AND @CURRENTTIME<Expires ORDER BY Expires ASC, LastModified DESC;"
+                    CommandText = SQL + " WHERE PersonID=@USERID AND @CURRENTTIME<Expires ORDER BY Expires ASC, LastModified DESC; DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 };
                 sqlCommand.Parameters.AddWithValue("USERID", PersonID);
                 sqlCommand.Parameters.AddWithValue("CURRENTTIME", DateTime.Now);
@@ -107,7 +107,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE StatusID=@STATUSID"
+                    CommandText = SQL + " WHERE StatusID=@STATUSID; DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 };
                 sqlCommand.Parameters.AddWithValue("STATUSID", StatusID);
                 sqlCommand.Connection.Open();
@@ -141,7 +141,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE PersonID=@USERID ORDER BY Expires ASC;"
+                    CommandText = SQL + " WHERE PersonID=@USERID ORDER BY Expires ASC; DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 };
                 sqlCommand.Parameters.AddWithValue("USERID", PersonID);
                 sqlCommand.Connection.Open();
@@ -194,7 +194,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, @LASTMODIFIED);"
+                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, @LASTMODIFIED);DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 };
                 sqlCommand.Parameters.AddWithValue("PERSONID", status.PersonID);
                 sqlCommand.Parameters.AddWithValue("EXPIRYDATE", status.Expires);
