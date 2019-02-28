@@ -83,6 +83,9 @@ body {
 	margin: 0;
 	padding: 0;		
 	z-index: 10;
+	-moz-box-shadow:    inset 0 0 10px #000000;
+   	-webkit-box-shadow: inset 0 0 10px #000000;
+   	box-shadow:         inset 0 0 10px #000000;
 }
 
 .person_button {
@@ -218,10 +221,14 @@ body {
 }
 
 .set_button {
-	width: 200px;
 	text-align: center;
 	border: 2px solid green;
+	color: green;
 	background-color: #88C674;
+}
+
+.set_button_contents {
+	width: 200px;	
 }
 
 .custom_status_input {	

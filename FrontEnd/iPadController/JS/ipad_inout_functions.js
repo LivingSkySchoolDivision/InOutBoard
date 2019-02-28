@@ -55,7 +55,7 @@ function buildOutOptionsBar(person) {
 	content += "<input style=\"vertical-align: middle;\" type=\"tel\" pattern=\"[0-9]*\" class=\"control_days_input\" value=\"1\"' id=\"txtDays_" + person.ID + "\"/>";
 
 	content += " days";
-	content += "&nbsp;&nbsp;&nbsp;&nbsp;<div style=\"vertical-align: middle;\" class=\"options_bar_button  noselect \"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents set_button  noselect\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
+	content += "&nbsp;&nbsp;&nbsp;&nbsp;<div style=\"vertical-align: middle;\" class=\"options_bar_button  noselect set_button \"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents set_button_contents  noselect\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
 	content += "</div>";
 	content += "</div>";
 
