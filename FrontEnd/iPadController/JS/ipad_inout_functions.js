@@ -1,10 +1,8 @@
-var INOUTAPIRoot = "https://inoutapi.lskysd.ca/api/";
-
 /* ************************************************************** */
 /* * HTML part builders                                         * */
 /* ************************************************************** */
 
-function buildPersonHTML(person) {
+function buildPersonHTML(person) {	
 	var content = "";
 
 	content += "<div class=\"person\">";
@@ -58,6 +56,43 @@ function buildOutOptionsBar(person) {
 	return content;
 }
 
+function buildUserList(people) {	
+	var divID = "user_list";
+
+	// Empty the list
+	$("#" + divID).empty();	
+	people.forEach(function(person) {						
+
+		// Add the user's HTML
+		$("#" + divID).append(buildPersonHTML(person));		
+		if (person.HasStatus == true) {				
+			updatePersonStatus(person.ID, person.CurrentStatus);
+		}
+	});
+
+	// Hide the loading animation
+	$("#loading").fadeOut();
+}
+
+/* ************************************************************** */
+/* * Event handling logic                                       * */
+/* ************************************************************** */
+
+function onPageLoad() {
+	INOUTAPIGetAllUsers(buildUserList);
+}
+
+function onInterval_UpdateUserStatuses() {	
+	INOUTAPIGetAllUsers(userUpdaterCallback);
+}
+
+function userUpdaterCallback(people) {
+	people.forEach(function(person) {
+		if (person.HasStatus == true) {				
+			updatePersonStatus(person.ID, person.CurrentStatus);			
+		}
+	});	
+}
 
 /* ************************************************************** */
 /* * Button handling logic                                      * */
@@ -74,8 +109,12 @@ function onclick_btnPersonStatusOut(personID) {
 function onclick_btnSetOutStatus(personID) {
 	setStatus_Out(personID); // gather the data here, and make the function only do the AJAX stuff
 	hideSlideOutOptionsBar(personID);
+}
 
-	//refreshStatus(personID);
+function callbackStatusUpdate(person) {
+	if (person.HasStatus == true) {				
+		updatePersonStatus(person.ID, person.CurrentStatus);			
+	}
 }
 
 /* ************************************************************** */
@@ -96,7 +135,6 @@ function hideSlideOutOptionsBar(personID) {
 
 }
 
-
 function toggleSlideOutOptionsBar(personID) {
 	var divID = "slide_out_options_bar_" + personID;
 
@@ -107,32 +145,17 @@ function toggleSlideOutOptionsBar(personID) {
 	}
 }
 
-
-/* ************************************************************** */
-/* * Options bar logic                                          * */
-/* ************************************************************** */
-
-function addDay(personID) {
-	var divID = "txtDays_" + personID;
-	var numDays = $("#" + divID).val();
-	numDays++;
-	$("#" + divID).val(numDays);
-		
-}
-
-function removeDay(personID) {
-	var divID = "txtDays_" + personID;
-	var numDays = $("#" + divID).val();
-	numDays--;
-	if (numDays < 1) {
-		numDays = 1;
-	}
-	$("#" + divID).val(numDays);
-}
-
 /* ************************************************************** */
 /* * Visual status setting logic                                * */
 /* ************************************************************** */
+
+function userUpdaterCallback(people) {
+	people.forEach(function(person) {
+		if (person.HasStatus == true) {				
+			updatePersonStatus(person.ID, person.CurrentStatus);			
+		}
+	});	
+}
 
 function setPersonUnknown(personID) {
 	// Reset status CSS - don't assume it's in a specific state
@@ -218,86 +241,13 @@ function updatePersonStatus(personID, status) {
 	//hideTimeControlBar(personID);
 }
 
-function updateAllPersonStatus() {
-	$("#" + intoThisContainer).empty();
-	$.getJSON(INOUTAPIRoot + "/People/", function(data) {		
-		$.each(data, function(categoryIndex, person) {
-			if (person.HasStatus == true) {
-				updatePersonStatus(person.ID, person.CurrentStatus);
-			}
-		}); // each
-	}); // getJSON
-}
-
-
-/* ************************************************************** */
-/* * AJAX / JSON Logic                                          * */
-/* ************************************************************** */
-
-function createUserList(intoThisContainer) {
-	$.getJSON(INOUTAPIRoot + "/PeopleWithStatus/", function(data) {	
-		$("#" + intoThisContainer).empty();	
-		$.each(data, function(categoryIndex, person) {
-			
-			// Add the user's HTML
-			$("#" + intoThisContainer).append(buildPersonHTML(person));
-
-			// Update the user's status display
-			if (person.HasStatus == true) {				
-				updatePersonStatus(person.ID, person.CurrentStatus);
-			}
-		}); // each
-	}); // getJSON
-}
-
-function showLoadingAnimation(divID) {
- 	// fas fa-spinner fa-pulse
- 	$("#" + divID).addClass("rotate");
-}
-
-function removeLoadingAnimation(divID) {
- 	$("#" + divID).removeClass("rotate"); 	
-}
-
-function showCheckMarkAnimation(divID) {
-	removeLoadingAnimation(divID);
-
-	// Get content of the div so we can put it back		
-	var oldContents = $("#" + divID).text();
-
-	if (oldContents != "✔") {
-		$("#" + divID).addClass("checkmark").text("✔").delay(500).fadeOut(1000, function() {$("#" + divID).text(oldContents).removeClass("checkmark").fadeIn("fast");});	
-	}
-}
-
-function JSONPostStatus(status, personID, callerDiv) {
-	$.ajax({
-		url:'https://inoutapi.lskysd.ca/api/status/',
-		method:'POST',			
-		dataType:'json',
-		data:JSON.stringify(status),
-		contentType:"application/json",				
-		success: function() {
-			showCheckMarkAnimation(callerDiv);
-			updatePersonStatus(personID, status);
-		},
-		error: function(data, status, xhr) {
-			console.log("Error:");
-			console.log(data);
-		}
-	});
-}
-
 function setStatus_In(personID) {
 	var callerDiv = "person_button_" + personID + "_in_contents"
-
-	showLoadingAnimation(callerDiv);
 
 	// Build a status object to send
 	var today = new Date(); // Quick in and out statuses expire at the end of the day	
 	today.setHours(24,(today.getTimezoneOffset() * -1),0,0);
-	var todayString = today.toJSON()
-	console.log(todayString);	
+	var todayString = today.toJSON()	
 	var newStatus = {
 		PersonID: personID,
 		Expires: todayString, 
@@ -306,8 +256,7 @@ function setStatus_In(personID) {
 	}
 
 	// Send the new status to the API
-	JSONPostStatus(newStatus, personID, callerDiv);
-	
+	INOUTAPIPostStatus(personID, newStatus, updatePersonStatus);	
 }
 
 function setStatus_Out(personID) {
@@ -320,13 +269,10 @@ function setStatus_Out(personID) {
 		days = 1;
 	}
 
-	showLoadingAnimation(callerDiv);
-
 	// Build a status object to send
 	var today = new Date(); // Quick in and out statuses expire at the end of the day	
 	today.setHours((24 * days),(today.getTimezoneOffset() * -1),0,0);
-	var todayString = today.toJSON()
-	console.log(todayString);	
+	var todayString = today.toJSON()	
 	var newStatus = {
 		PersonID: personID,
 		Expires: todayString, 
@@ -335,24 +281,20 @@ function setStatus_Out(personID) {
 	}
 
 	// Send the new status to the API
-	JSONPostStatus(newStatus, personID, callerDiv);
+	INOUTAPIPostStatus(personID, newStatus, updatePersonStatus);
 }
 
-function setStatus_Busy(personID) {
-	var callerDiv = "options_bar_button" + personID + "_busy_contents"
+/* ************************************************************** */
+/* * Effects and animations                                     * */
+/* ************************************************************** */
 
-	showLoadingAnimation(callerDiv);
+function showCheckMarkAnimation(divID) {
+	removeLoadingAnimation(divID);
 
-	// Build a status object to send
-	var today = new Date(); // Quick in and out statuses expire at the end of the day		
-	var newStatus = {
-		PersonID: personID,
-		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: "",
-		StatusType: 3
+	// Get content of the div so we can put it back		
+	var oldContents = $("#" + divID).text();
+
+	if (oldContents != "✔") {
+		$("#" + divID).addClass("checkmark").text("✔").delay(500).fadeOut(1000, function() {$("#" + divID).text(oldContents).removeClass("checkmark").fadeIn("fast");});	
 	}
-
-	// Send the new status to the API
-	JSONPostStatus(newStatus, personID, callerDiv);	
 }
-

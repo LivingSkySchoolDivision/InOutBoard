@@ -2,7 +2,7 @@
 /* * Document onLoad stuff                    * */
 /* ******************************************** */
 $(document).ready(function(){
-	createUserList("user_list");
+	onPageLoad();
 });
 
 /* ******************************************** */
@@ -23,3 +23,7 @@ $(document).ready(function(){
 setInterval(function() {
     UpdateAllInOutPresence();
 }, 25000);*/
+
+setInterval(function() {
+	onInterval_UpdateUserStatuses();
+}, 60000);
