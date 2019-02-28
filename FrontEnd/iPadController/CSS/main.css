@@ -44,6 +44,8 @@ body {
 /* *********************************************************************** */
 .person {
 	margin: 5px;
+	padding: 0;
+	padding-bottom: 5px;
 	position: relative;
 	min-height: 102px;
 	border-bottom: 1px solid rgb(200,200,200);
@@ -63,20 +65,24 @@ body {
 /* *********************************************************************** */
 
 .person_buttons {
+	box-sizing: border-box;
 	position: absolute;
 	background-color: #444444;
 	right: 0;
 	top: 0;
 	display: inline-block;
 	border: 2px solid black	;
-	border-radius: 7px;	
+	border-radius: 7px;
+	margin: 0;
+	padding: 0;		
 }
 
 .person_button {
+	box-sizing: border-box;
 	color: black;
 	display: inline-block;
 	font-weight: bold;	
-	border-radius: 5px;
+	border-radius: 5px;	
 }
 
 .person_button_dim {
@@ -128,50 +134,32 @@ body {
 /* * Slide out options bars                                              * */
 /* *********************************************************************** */
 
-.options_bar {
-	display: table-cell;
-	border: 2px solid black;
+.slide_out_options_bar {
+	box-sizing: border-box;
 	z-index: 99;
-	height: 200px;
 	border: 0;
-	padding-bottom: 10px;
-	padding-top: 10px;
-	padding-left: 0px;
-	padding-right: 0px;
-	text-align: center;	
-	font-size: 30px;
-	vertical-align: middle;
-}
-
-.second_level_options_bar {
-	display: table-cell;
-	border: 2px solid black;
-	z-index: 99;
-	height: 100px;
-	border: 0;
-	padding-bottom: 10px;
-	padding-top: 10px;
-	padding-left: 0px;
-	padding-right: 0px;
-	text-align: center;	
-	font-size: 30px;
-	vertical-align: middle;
-
-}
-
-.options_bar_outer_content_container { 
+	border-bottom: 2px solid black;
 	padding: 0;
 	margin: 0;
-	height: 100%;
+	padding-bottom: 10px;
+}
+
+.slide_out_options_bar_section {
+	margin-top: 10px;
+	box-sizing: border-box;	
+	height: 100px;
 	width: 100%;
 	display: flex;
 	align-items: center;
- 	text-align: center; 
- }
+}
 
- .options_bar_inner_content_container {
+.slide_out_options_bar_section_content { 
+	box-sizing: border-box;
+ 	text-align: right; 
+	font-size: 30px;
+	padding: 0;
  	width: 100%;
- }
+}
 
 .button_small_text {
 	font-size: 14pt !important;
@@ -202,6 +190,11 @@ body {
 	display: none;
 }
 
+.set_button {
+	width: 200px;
+	text-align: center;
+}
+
 .custom_status_input {
 	margin: 0;
 	padding: 0;
@@ -209,13 +202,13 @@ body {
 	margin-left: 25px;
 	height: 100px;
 	border: 1px solid black;
-	width: 450px;
+	width: 90%;
 	display: inline;
 	vertical-align: top;
 	font-size: 30px;
 }
 
-.control_bar_days_input {
+.control_days_input {
 	margin: 10px;
 	margin-top: 0;
 	padding: 0;

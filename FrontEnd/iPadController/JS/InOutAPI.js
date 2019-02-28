@@ -35,40 +35,26 @@ function buildOutOptionsBar(person) {
 			}
 		}
 	}
-	content += "<div class=\"options_bar hidden\" id=\"out_options_bar_" + person.ID + "\">";
-	content += "<div class=\"options_bar_outer_content_container\">";
-	content += "<div class=\"options_bar_inner_content_container\">";
-	content += "<input type=\"text\" class=\"custom_status_input\" value=\"" + customStatusText + "\"' id=\"custom_out_status_" + person.ID + "\"/>";
-	content += "<div class=\"options_bar_button\"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
+	content += "<div class=\"slide_out_options_bar hidden\" id=\"slide_out_options_bar_" + person.ID + "\">";
+	
+	content += "<div class=\"slide_out_options_bar_section\">";
+	content += "<div class=\"slide_out_options_bar_section_content\">";
+	content += "<input type=\"text\" class=\"custom_status_input\" value=\"" + customStatusText + "\"' id=\"txtCustomOutStatus_" + person.ID + "\"/>";	
 	content += "</div>";
 	content += "</div>";
-	content += "</div>";	
-	content += buildOutDurationOptionsBar(person);
-	return content;
-}
 
-function buildOutDurationOptionsBar(person) {
-	var content = "";
-	var customStatusText = "";
-	if (person.HasStatus == true) {
-		if (person.CurrentStatus.Content.length > 0) {
-			if ((person.CurrentStatus.Content != "In") && (person.CurrentStatus.Content != "Out")) {
-				customStatusText = person.CurrentStatus.Content;
-			}
-		}
-	}
-	content += "<div class=\"second_level_options_bar hidden\" id=\"out_duration_options_bar_" + person.ID + "\">";
-	content += "<div class=\"options_bar_outer_content_container\">";
-	content += "<div class=\"options_bar_inner_content_container\">";
+	content += "<div class=\"slide_out_options_bar_section\">";
+	content += "<div class=\"slide_out_options_bar_section_content\">";
 	content += "For the next ";
 	
-	content += "<input style=\"vertical-align: middle;\" type=\"tel\" pattern=\"[0-9]*\" class=\"control_bar_days_input\" value=\"1\"' id=\"txtDays_" + person.ID + "\"/>";
+	content += "<input style=\"vertical-align: middle;\" type=\"tel\" pattern=\"[0-9]*\" class=\"control_days_input\" value=\"1\"' id=\"txtDays_" + person.ID + "\"/>";
 
 	content += " days";
-	content += "</div>";
+	content += "&nbsp;&nbsp;&nbsp;&nbsp;<div style=\"vertical-align: middle;\" class=\"options_bar_button \"><div id=\"btnSetOutStatus_" + person.ID + "\" class=\"options_bar_button_contents set_button\" onClick=\"onclick_btnSetOutStatus(" + person.ID + ");\">SET</div></div>";
 	content += "</div>";
 	content += "</div>";
 
+	content += "</div>";	
 	return content;
 }
 
@@ -78,71 +64,46 @@ function buildOutDurationOptionsBar(person) {
 /* ************************************************************** */
 
 function onclick_btnPersonStatusIn(personID) {
-	alert("IN");
+	setStatus_In(personID);
 }
 
 function onclick_btnPersonStatusOut(personID) {
-	toggleOutOptionsBar(personID);
-}
-
-function onclick_btnOutDuration(personID) {
-	// Open the duration options bar
-	toggleOutDurationsOptionsBar(personID);		
+	toggleSlideOutOptionsBar(personID);
 }
 
 function onclick_btnSetOutStatus(personID) {
-	alert("out status");
+	setStatus_Out(personID); // gather the data here, and make the function only do the AJAX stuff
+	hideSlideOutOptionsBar(personID);
+
+	//refreshStatus(personID);
 }
 
 /* ************************************************************** */
 /* * Options bar Hide / Show Logic                              * */
 /* ************************************************************** */
 
-function showOutOptionsBar(personID) {
-	var divID = "out_options_bar_" + personID;
+function showSlideOutOptionsBar(personID) {
+	var divID = "slide_out_options_bar_" + personID;
 	$("#" + divID).slideDown();
 	$("#" + divID).removeClass("hidden");
 
 }
 
-function hideOutOptionsBar(personID) {
-	var divID = "out_options_bar_" + personID;
+function hideSlideOutOptionsBar(personID) {
+	var divID = "slide_out_options_bar_" + personID;
 	$("#" + divID).slideUp();
 	$("#" + divID).addClass("hidden");
 
 }
 
-function showOutDurationBar(personID) {
-	var divID = "out_duration_options_bar_" + personID;
-	$("#" + divID).slideDown();
-	$("#" + divID).removeClass("hidden");
-}
 
-function hideOutDurationBar(personID) {
-	var divID = "out_duration_options_bar_" + personID;
-	$("#" + divID).slideUp();
-	$("#" + divID).addClass("hidden");
-
-}
-
-function toggleOutOptionsBar(personID) {
-	var divID = "out_options_bar_" + personID;
+function toggleSlideOutOptionsBar(personID) {
+	var divID = "slide_out_options_bar_" + personID;
 
 	if ($("#" + divID).hasClass("hidden")) {
-		showOutOptionsBar(personID);
+		showSlideOutOptionsBar(personID);
 	} else {
-		hideOutDurationBar(personID);
-		hideOutOptionsBar(personID);
-	}
-}
-
-function toggleOutDurationsOptionsBar(personID) {
-	var divID = "out_duration_options_bar_" + personID;
-	
-	if ($("#" + divID).hasClass("hidden")) {
-		showOutDurationBar(personID);
-	} else {
-		hideOutDurationBar(personID);
+		hideSlideOutOptionsBar(personID);
 	}
 }
 
@@ -333,11 +294,14 @@ function setStatus_In(personID) {
 	showLoadingAnimation(callerDiv);
 
 	// Build a status object to send
-	var today = new Date(); // Quick in and out statuses expire at the end of the day		
+	var today = new Date(); // Quick in and out statuses expire at the end of the day	
+	today.setHours(24,(today.getTimezoneOffset() * -1),0,0);
+	var todayString = today.toJSON()
+	console.log(todayString);	
 	var newStatus = {
 		PersonID: personID,
-		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: "In",
+		Expires: todayString, 
+		Content: "",
 		StatusType: 1
 	}
 
@@ -348,15 +312,25 @@ function setStatus_In(personID) {
 
 function setStatus_Out(personID) {
 	var callerDiv = "person_button_" + personID + "_out_contents"
-	showLoadingAnimation(callerDiv);	
-	
+	var custom_status = $("#txtCustomOutStatus_" + personID).val();
+	var custom_days = $("#txtDays_" + personID).val();
+
+	var days = parseInt(custom_days);
+	if (days < 1) {
+		days = 1;
+	}
+
+	showLoadingAnimation(callerDiv);
 
 	// Build a status object to send
 	var today = new Date(); // Quick in and out statuses expire at the end of the day	
+	today.setHours((24 * days),(today.getTimezoneOffset() * -1),0,0);
+	var todayString = today.toJSON()
+	console.log(todayString);	
 	var newStatus = {
-		PersonID: personID,	
-		Expires: today.getFullYear() + "-" + (today.getMonth()+1) + "-" + (today.getDate()+1) + "T00:00:00.000Z", 
-		Content: "",
+		PersonID: personID,
+		Expires: todayString, 
+		Content: custom_status,
 		StatusType: 2
 	}
 
