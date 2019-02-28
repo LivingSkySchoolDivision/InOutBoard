@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');
 
 /* 
 	Color themes I'm playing with
@@ -64,7 +64,7 @@ body {
 	font-size: 40px;
 	vertical-align: middle;
 	padding-left: 10px;
-    font-weight: bold;
+	font-weight: 500;
 }
 
 /* *********************************************************************** */
@@ -89,7 +89,7 @@ body {
 	box-sizing: border-box;
 	color: black;
 	display: inline-block;
-	font-weight: bold;	
+	font-weight: 900;	
 	border-radius: 5px;	
 }
 
@@ -181,7 +181,7 @@ body {
 	color: black;
 	display: inline-block;
 	margin-right: 10px;
-	font-weight: bold;
+	font-weight: 900;
 	border-radius: 8px;
 }
 
