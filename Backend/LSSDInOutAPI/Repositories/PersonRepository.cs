@@ -51,6 +51,9 @@ namespace LSSDInOutAPI.Repositories
             };
         }
 
+
+
+
         public List<Person> GetAll()
         {
             List<Person> returnMe = new List<Person>();
@@ -115,6 +118,41 @@ namespace LSSDInOutAPI.Repositories
             }
 
             return null;
+        }
+
+        public List<Person> GetGroupMembers(int groupID)
+        {
+            List<Person> returnMe = new List<Person>();
+
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = SQL + " WHERE GroupMemberships LIKE '%" + groupID + "%'"
+                };
+                sqlCommand.Connection.Open();
+                SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
+
+                if (dbDataReader.HasRows)
+                {
+                    while (dbDataReader.Read())
+                    {
+                        Person u = dataReaderToPerson(dbDataReader);
+                        if (u != null)
+                        {
+                            if (u.GroupsIDs.Contains(groupID)) { 
+                                returnMe.Add(u);
+                            }
+                        }
+                    }
+                }
+
+                sqlCommand.Connection.Close();
+            }
+
+            return returnMe.OrderBy(u => u.FirstName).ThenBy(u => u.LastName).ToList();
         }
     }
 }
