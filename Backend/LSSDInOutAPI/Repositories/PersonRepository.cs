@@ -14,9 +14,12 @@ namespace LSSDInOutAPI.Repositories
         private readonly string _dbConnectionString;
         private const string SQL = "SELECT * FROM People";
 
+        private readonly StatusRepository _statusRepository;
+
         public PersonRepository(string dbConnectionString)
         {
             this._dbConnectionString = dbConnectionString;
+            this._statusRepository = new StatusRepository(dbConnectionString);
         }
 
         private Person dataReaderToPerson(SqlDataReader dataReader)
@@ -35,14 +38,16 @@ namespace LSSDInOutAPI.Repositories
                     }
                 }
             }
-            
+
+            int personID = dataReader["ID"].ToString().Trim().ToInt();
             return new Person()
             {
-                ID = dataReader["ID"].ToString().Trim().ToInt(),
+                ID = personID,
                 FirstName = dataReader["FirstName"].ToString().Trim(),
                 LastName = dataReader["LastName"].ToString().Trim(),
                 IsEnabled = dataReader["IsEnabled"].ToString().Trim().ToBool(),
-                GroupsIDs = groupIDs, 
+                GroupsIDs = groupIDs,
+                CurrentStatus = _statusRepository.GetActiveForPerson(personID)
             };
         }
 

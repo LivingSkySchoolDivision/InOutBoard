@@ -11,6 +11,12 @@ namespace LSSDInOutLib.Model
         public string LastName { get; set; }                
         public bool IsEnabled { get; set; }
         public List<int> GroupsIDs { get; set; }
+        public Status CurrentStatus { get; set; }
+        public bool HasStatus { get
+            {
+                return this.CurrentStatus != null;
+            }
+        }
                 
 
         public string DisplayName
@@ -33,18 +39,6 @@ namespace LSSDInOutLib.Model
         {
             this.GroupsIDs = new List<int>();
         }
-
-        public PersonWithStatus AddStatus(Status status)
-        {
-            return new PersonWithStatus()
-            {
-                FirstName = this.FirstName,
-                LastName = this.LastName,
-                IsEnabled = this.IsEnabled,
-                ID = this.ID,
-                CurrentStatus = status,
-                GroupsIDs = this.GroupsIDs
-            };
-        }
+        
     }
 }
