@@ -19,11 +19,11 @@ $(document).ready(function(){
  3600000     1 hour
  */
 
-/*
-setInterval(function() {
-    UpdateAllInOutPresence();
-}, 25000);*/
-
 setInterval(function() {
 	onInterval_UpdateUserStatuses();
 }, 60000);
+
+/* Refresh the page every hour ish */
+setInterval(function() {
+    location.reload();
+}, (3600000*7));
