@@ -18,13 +18,23 @@
     	<link href="CSS/main.css" rel="stylesheet" /> 
     	<script src="JS/AppleLinkFix.js"></script>
     	<script src="JS/jquery-3.3.1.min.js"></script>
+        <script src="JS/js.cookie.js"></script>        
     	<script src="JS/LSSDInOutAPI.js"></script>
         <script src="JS/ipad_inout_functions.js"></script>
     	<script src="JS/ipad_autostart.js"></script>
+
 	</head>
 	<body>
 		<div class="ipad_sized_page_container">
             <div id="loading" class="loading_text"><i class="fas fa-cog fa-spin"></i> Loading...<div class="status_log" id="status_log"></div></div>
+            <div id="title_bar" class="title_bar noselect hidden">
+                <div class="title_bar_text" onclick="onclick_TitleBar()">
+				    <i class="fa fa-filter"></i>&nbsp;
+                    <div id="lblFilterBy">All People</div>
+                </div>
+                <div id="mnuFilterSelect" class="title_bar_menu hidden">
+                </div>
+            </div>
 			<div id="user_list"></div>
 		</div>
 	</body>

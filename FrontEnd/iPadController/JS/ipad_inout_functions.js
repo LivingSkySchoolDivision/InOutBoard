@@ -2,7 +2,7 @@
 /* * HTML part builders                                         * */
 /* ************************************************************** */
 var visiblePeopleIDs = new Array();
-
+var filterGroupID = 0;
 
 function buildPersonHTML(person) {	
 
@@ -79,6 +79,40 @@ function buildUserList(people) {
 
 	// Hide the loading animation
 	$("#loading").fadeOut();
+
+	// Show the title bar
+	$("#title_bar").show();
+}
+
+function buildFilterButton(group) {
+	var content = "";
+
+	content += "<div id=\"btnChangeFilter_" + group.ID + "\" class=\"filter_option\" onclick=\"onClick_btnChangeFilter(" + group.ID + ");\">" + group.Name + "</div>";
+
+	return content;
+}
+
+function buildGroupList(groups) {	
+	var divID = "mnuFilterSelect";
+
+	// Empty the list
+	$("#" + divID).empty();	
+
+	// Add "All people" group
+	$("#" + divID).append(buildFilterButton({ "ID":0, "Name":"Everyone (no filter)" }));
+
+	// Add all other groups
+	groups.forEach(function(group) {						
+
+		// Add the user's HTML
+		$("#" + divID).append(buildFilterButton(group));		
+	});
+
+	// Hide the loading animation
+	$("#loading").fadeOut();
+
+	// Show the title bar
+	$("#title_bar").show();	
 }
 
 /* ************************************************************** */
@@ -86,11 +120,23 @@ function buildUserList(people) {
 /* ************************************************************** */
 
 function onPageLoad() {
-	INOUTAPIGetAllUsers(buildUserList);
+	// Load the list of all groups
+	INOUTAPIGetAllGroups(buildGroupList);
+
+	// Load saved filter from cookies
+ 	filterGroupID = getFilterFromCookies(); 	
+
+ 	// Update the filter name
+ 	if (filterGroupID > 0) {
+	 	INOUTAPIGetGroup(filterGroupID, filterNameCallback);
+ 	}
+
+ 	// Load all group members
+	INOUTAPIGetGroupMembers(filterGroupID,buildUserList);
 }
 
 function onInterval_UpdateUserStatuses() {	
-	INOUTAPIGetAllUsers(userUpdaterCallback);
+	INOUTAPIGetGroupMembers(filterGroupID,userUpdaterCallback);
 }
 
 function userUpdaterCallback(people) {
@@ -99,6 +145,38 @@ function userUpdaterCallback(people) {
 			updatePersonStatus(person.ID, person.CurrentStatus);			
 		}
 	});	
+}
+
+function filterNameCallback(group) {	
+	var groupName = "Everyone (no filter)";
+
+	if (group != null) {
+		groupName = group.Name;
+	} 
+
+	update_filter_name(group.Name);	
+}
+
+function filterUpdateCallback(group) {
+	var groupID = 0;
+	var groupName = "Everyone (no filter)";
+
+	if (group != null) {
+		groupID = group.ID;
+		groupName = group.Name;
+	}
+
+	// Set the filter
+	setFilter(groupID);
+
+	// Update the filter name
+	update_filter_name(groupName);
+
+	// Refresh the list of users
+	INOUTAPIGetGroupMembers(groupID ,buildUserList);
+
+	// Hide the filter menu
+	hideFilterSelect();	
 }
 
 /* ************************************************************** */
@@ -117,6 +195,61 @@ function onclick_btnPersonStatusOut(personID) {
 function onclick_btnSetOutStatus(personID) {
 	setStatus_Out(personID); 	
 	hideSlideOutOptionsBar(personID);
+}
+
+function onclick_TitleBar() {
+ 	toggleFilterSelect();
+}
+
+function onClick_btnChangeFilter(groupID) {	
+	INOUTAPIGetGroup(groupID, filterUpdateCallback);	
+}
+
+/* ************************************************************** */
+/* * Title bar / Filter bar logic                               * */
+/* ************************************************************** */
+
+function showFilterSelect() {
+	var divID = "mnuFilterSelect";
+	$("#" + divID).slideDown();
+	$("#" + divID).removeClass("hidden");
+}
+
+function hideFilterSelect() {
+	var divID = "mnuFilterSelect";
+	$("#" + divID).slideUp();
+	$("#" + divID).addClass("hidden");
+}
+
+function toggleFilterSelect() {
+	var divID = "mnuFilterSelect";
+
+	if ($("#" + divID).hasClass("hidden")) {
+		showFilterSelect();
+	} else {
+		hideFilterSelect();
+	}
+}
+
+function update_filter_name(groupName) {
+	$("#lblFilterBy").text(groupName);
+}
+
+function setFilter(groupID) {
+	console.log("setting filter to " + groupID);
+
+	// Set the filter variable here (for as long as this page doesn't refresh)
+	filterGroupID = groupID;
+
+	// Save this to a cookie if we can (so we can pick it up if the page does refresh)
+	Cookies.set("lssd_inout_filter_groupid", groupID);
+
+	// Update filter name to the new group name
+	update_filter_name(groupID);
+}
+
+function getFilterFromCookies() {
+  	return Cookies.get("lssd_inout_filter_groupid");
 }
 
 /* ************************************************************** */
@@ -158,7 +291,6 @@ function toggleSlideOutOptionsBar(personID) {
 }
 
 function hideAllSlideOutOptionsBars() {
-
 }
 
 /* ************************************************************** */
