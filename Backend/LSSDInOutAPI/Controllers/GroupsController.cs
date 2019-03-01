@@ -11,11 +11,11 @@ using System.Web.Http.Cors;
 namespace LSSDInOutAPI.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class GroupController : ApiController
+    public class GroupsController : ApiController
     {
         private readonly GroupRepository _groupRepository;
 
-        public GroupController()
+        public GroupsController()
         {
             _groupRepository = new GroupRepository(Settings.dbConnectionString);
 
