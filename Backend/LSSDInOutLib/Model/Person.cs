@@ -8,8 +8,10 @@ namespace LSSDInOutLib.Model
     {
         public int ID { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string LastName { get; set; }                
         public bool IsEnabled { get; set; }
+        public List<int> GroupsIDs { get; set; }
+                
 
         public string DisplayName
         {
@@ -29,6 +31,7 @@ namespace LSSDInOutLib.Model
 
         public Person()
         {
+            this.GroupsIDs = new List<int>();
         }
 
         public PersonWithStatus AddStatus(Status status)
@@ -40,6 +43,7 @@ namespace LSSDInOutLib.Model
                 IsEnabled = this.IsEnabled,
                 ID = this.ID,
                 CurrentStatus = status,
+                GroupsIDs = this.GroupsIDs
             };
         }
     }

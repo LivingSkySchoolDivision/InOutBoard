@@ -19,17 +19,31 @@ namespace LSSDInOutAPI.Repositories
             this._dbConnectionString = dbConnectionString;
         }
 
-        private Person dataReaderToTrackedUser(SqlDataReader dataReader)
+        private Person dataReaderToPerson(SqlDataReader dataReader)
         {
-            Person returnMe = new Person()
+            // Parse group IDs
+            List<string> groupIDString = dataReader["GroupMemberships"].ToString().Trim().Split(';').ToList();
+            List<int> groupIDs = new List<int>();
+            foreach(string grpIDString in groupIDString)
+            {
+                int grpID = grpIDString.ToInt();
+                if (grpID > 0)
+                {
+                    if (!groupIDs.Contains(grpID))
+                    {
+                        groupIDs.Add(grpID);
+                    }
+                }
+            }
+            
+            return new Person()
             {
                 ID = dataReader["ID"].ToString().Trim().ToInt(),
                 FirstName = dataReader["FirstName"].ToString().Trim(),
                 LastName = dataReader["LastName"].ToString().Trim(),
                 IsEnabled = dataReader["IsEnabled"].ToString().Trim().ToBool(),
+                GroupsIDs = groupIDs, 
             };
-
-            return returnMe;
         }
 
         public List<Person> GetAll()
@@ -51,7 +65,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     while (dbDataReader.Read())
                     {
-                        Person u = dataReaderToTrackedUser(dbDataReader);
+                        Person u = dataReaderToPerson(dbDataReader);
                         if (u != null)
                         {
                             returnMe.Add(u);
@@ -84,7 +98,7 @@ namespace LSSDInOutAPI.Repositories
                 {
                     while (dbDataReader.Read())
                     {
-                        Person u = dataReaderToTrackedUser(dbDataReader);
+                        Person u = dataReaderToPerson(dbDataReader);
                         if (u != null)
                         {
                             return u;
