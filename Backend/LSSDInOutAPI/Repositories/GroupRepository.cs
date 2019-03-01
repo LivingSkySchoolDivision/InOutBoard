@@ -70,8 +70,9 @@ namespace LSSDInOutAPI.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL
+                    CommandText = SQL + " WHERE ID=@ID"
                 };
+                sqlCommand.Parameters.AddWithValue("ID", groupID);
                 sqlCommand.Connection.Open();
                 SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 
