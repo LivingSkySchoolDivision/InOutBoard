@@ -10,13 +10,13 @@ function log(string) {
 
 
 function INOUTAPIGetUserStatus(personID, callbackFunction) {		
-	$.getJSON(INOUTAPIRoot + "/PeopleWithStatus/" + personID, function(data) {	
+	$.getJSON(INOUTAPIRoot + "/People/" + personID, function(data) {	
 		callbackFunction(data);
 	}); // getJSON
 }
 
 function INOUTAPIGetAllUsers(callbackFunction) {
-	var JSONURL = INOUTAPIRoot + "/PeopleWithStatus/"
+	var JSONURL = INOUTAPIRoot + "/People/"
 	log("Getting all users from " + JSONURL);
 	var returnMe = new Array();	
 	$.getJSON(JSONURL, function(data) {	
