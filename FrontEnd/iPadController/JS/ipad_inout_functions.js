@@ -242,7 +242,7 @@ function setFilter(groupID) {
 	filterGroupID = groupID;
 
 	// Save this to a cookie if we can (so we can pick it up if the page does refresh)
-	Cookies.set("lssd_inout_filter_groupid", groupID);
+	Cookies.set("lssd_inout_filter_groupid", groupID, { expires: 3650 });
 
 	// Update filter name to the new group name
 	update_filter_name(groupID);
