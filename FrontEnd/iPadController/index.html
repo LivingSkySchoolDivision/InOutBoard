@@ -26,6 +26,15 @@
 	</head>
 	<body>
 		<div class="ipad_sized_page_container">
+			<div id="watchdog_reload_warning_message" class="pop_up_window_curtains">
+				<div class="pop_up_window">
+					<p>
+						It looks like this page hasn't been refreshed in a while, and it might be out of date.
+					</p>
+					<br />
+					<a href="index.html" class="pop_up_window_button">PUSH ME TO RELOAD</a><br /><br />
+				</div>
+			</div>
             <div id="loading" class="loading_text"><i class="fas fa-cog fa-spin"></i> Loading...<div class="status_log" id="status_log"></div></div>
             <div id="title_bar" class="title_bar noselect hidden">
                 <div class="title_bar_text" onclick="onclick_TitleBar()">
@@ -36,6 +45,15 @@
                 </div>
             </div>
 			<div id="user_list"></div>
+			<br />
+			<div class="reload_timer_bar">
+				<div class="reload_timer_bar_progress"></div>
+			</div>
+			<div class="footer">
+				Page last refreshed at
+				<div class="pop_up_details_field" id="last_refresh_time"></div>
+				on <div class="pop_up_details_field" id="last_refresh_date"></div>
+			</div>
 		</div>
 	</body>
 </html>

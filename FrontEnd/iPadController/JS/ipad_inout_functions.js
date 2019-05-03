@@ -3,6 +3,7 @@
 /* ************************************************************** */
 var visiblePeopleIDs = new Array();
 var filterGroupID = 0;
+var pageLoadedTimeStamp = 0;
 
 function buildPersonHTML(person) {	
 
@@ -452,5 +453,26 @@ function showCheckMarkAnimation(divID) {
 
 	if (oldContents != "✔") {
 		$("#" + divID).addClass("checkmark").text("✔").delay(500).fadeOut(1000, function() {$("#" + divID).text(oldContents).removeClass("checkmark").fadeIn("fast");});	
+	}
+}
+
+/* ************************************************************** */
+/* * Page reload watchdog                                       * */
+/* ************************************************************** */
+
+function initializePageWatchdog() {
+	var date = new Date();
+	pageLoadedTimeStamp = date.getTime();
+	$("#last_refresh_time").html(date.toTimeString());
+	$("#last_refresh_date").html(date.toDateString());
+}
+
+function checkPageWatchdog() {
+	var date = new Date();
+	var currentTimestamp = date.getTime();
+
+	// Show warning at 6 minutes (1 minute after the page should have reloaded)
+	if ((currentTimestamp - pageLoadedTimeStamp) > 360000) {
+		$("#watchdog_reload_warning_message").fadeIn();
 	}
 }

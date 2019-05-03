@@ -3,6 +3,7 @@
 /* ******************************************** */
 $(document).ready(function(){
 	onPageLoad();
+	initializePageWatchdog();
 });
 
 /* ******************************************** */
@@ -26,4 +27,8 @@ setInterval(function() {
 /* Refresh the page every hour ish */
 setInterval(function() {
     location.reload();
-}, (3600000*7));
+}, (300000));
+
+setInterval(function () {
+	checkPageWatchdog();
+}, (5000));
