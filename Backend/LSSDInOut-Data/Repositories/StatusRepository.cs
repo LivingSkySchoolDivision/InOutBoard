@@ -75,11 +75,10 @@ namespace LSSD.InOut.Data.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE PersonID=@USERID AND @CURRENTTIME<Expires ORDER BY Expires ASC, LastModified DESC; DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
+                    CommandText = SQL + " WHERE PersonID=@USERID AND GETDATE()<Expires ORDER BY Expires ASC, LastModified DESC; DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 })
                 {
                     sqlCommand.Parameters.AddWithValue("USERID", PersonID);
-                    sqlCommand.Parameters.AddWithValue("CURRENTTIME", DateTime.Now);
                     sqlCommand.Connection.Open();
                     SqlDataReader dbDataReader = sqlCommand.ExecuteReader();
 
@@ -203,14 +202,13 @@ namespace LSSD.InOut.Data.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, @LASTMODIFIED);DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
+                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, GETDATE());DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
                 })
                 {
                     sqlCommand.Parameters.AddWithValue("PERSONID", status.PersonID);
                     sqlCommand.Parameters.AddWithValue("EXPIRYDATE", status.Expires);
                     sqlCommand.Parameters.AddWithValue("STATUSCONTENT", status.Content);
                     sqlCommand.Parameters.AddWithValue("STATUSTYPE", status.StatusType);
-                    sqlCommand.Parameters.AddWithValue("LASTMODIFIED", DateTime.Now);
                     sqlCommand.Connection.Open();
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Connection.Close();
