@@ -11,8 +11,7 @@ pipeline {
         stage('Docker build - API') {
             steps {
                 git branch: 'master',
-                    credentialsId: 'JENKINS-AZUREDEVOPS',
-                    url: 'git@ssh.dev.azure.com:v3/LivingSkySchoolDivision/InOutBoard/InOutBoard'
+                    url: 'https://sourcecode.lskysd.ca/PublicCode/InOutBoard.git'
 
                 dir("Backend") {
                     sh "docker build -t ${PRIVATE_REPO_API}:latest -t ${PRIVATE_REPO_API}:${TAG} ."
@@ -22,8 +21,7 @@ pipeline {
         stage('Docker build - Frontend') {
             steps {
                 git branch: 'master',
-                    credentialsId: 'JENKINS-AZUREDEVOPS',
-                    url: 'git@ssh.dev.azure.com:v3/LivingSkySchoolDivision/InOutBoard/InOutBoard'
+                    url: 'https://sourcecode.lskysd.ca/PublicCode/InOutBoard.git'
 
                 dir("Frontend") {
                     sh "docker build -t ${PRIVATE_REPO_FE}:latest -t ${PRIVATE_REPO_FE}:${TAG} ."
