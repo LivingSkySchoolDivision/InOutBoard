@@ -5,7 +5,7 @@ pipeline {
         REPO_API = "inout/inout-api"
         PRIVATE_REPO_FE = "${PRIVATE_DOCKER_REGISTRY}/${REPO_FE}"
         PRIVATE_REPO_API = "${PRIVATE_DOCKER_REGISTRY}/${REPO_API}"
-        TAG = "j-${env.BUILD_NUMBER}"
+        TAG = "${BUILD_TIMESTAMP}"
     }
     stages {
         stage('Docker build - API') {
