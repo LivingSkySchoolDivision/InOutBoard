@@ -11,7 +11,7 @@ pipeline {
         stage('Docker build - API') {
             steps {
                 git branch: 'master',
-                    url: 'https://sourcecode.lskysd.ca/PublicCode/InOutBoard.git'
+                    url: 'https://github.com/LivingSkySchoolDivision/InOutBoard.git'
 
                 dir("Backend") {
                     sh "docker build -t ${PRIVATE_REPO_API}:latest -t ${PRIVATE_REPO_API}:${TAG} ."
@@ -21,7 +21,7 @@ pipeline {
         stage('Docker build - Frontend') {
             steps {
                 git branch: 'master',
-                    url: 'https://sourcecode.lskysd.ca/PublicCode/InOutBoard.git'
+                    url: 'https://github.com/LivingSkySchoolDivision/InOutBoard.git'
 
                 dir("Frontend") {
                     sh "docker build -t ${PRIVATE_REPO_FE}:latest -t ${PRIVATE_REPO_FE}:${TAG} ."
