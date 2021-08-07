@@ -202,7 +202,7 @@ namespace LSSD.InOut.Data.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, GETDATE());DELETE FROM PersonStatuses WHERE Expires<GETDATE();"
+                    CommandText = "DELETE FROM PersonStatuses WHERE Expires<GETDATE();DELETE FROM PersonStatuses WHERE PersonID=@PERSONID;INSERT INTO PersonStatuses(PersonID, Expires, StatusContent, StatusTypeID, LastModified) VALUES(@PERSONID,@EXPIRYDATE,@STATUSCONTENT,@STATUSTYPE, GETDATE());"
                 })
                 {
                     sqlCommand.Parameters.AddWithValue("PERSONID", status.PersonID);
