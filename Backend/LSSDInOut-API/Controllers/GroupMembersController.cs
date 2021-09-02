@@ -27,7 +27,7 @@ namespace LSSD.InOut.API.Controllers
         [HttpGet]
         public IEnumerable<Person> Get()
         {
-            return _personRepository.GetAll();
+            return _personRepository.GetEnabled();
         }
 
         // GET: api/groupmembers/5
