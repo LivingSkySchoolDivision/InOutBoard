@@ -136,7 +136,7 @@ namespace LSSD.InOut.Data.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = SQL + " WHERE GroupMemberships LIKE '%" + groupID + "%'"
+                    CommandText = SQL + " WHERE IsEnabled=1 AND GroupMemberships LIKE '%" + groupID + "%'"
                 })
                 {
                     sqlCommand.Connection.Open();
