@@ -1,0 +1,51 @@
+
+.page_container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;    
+}
+
+.person {
+    width: 100%; 
+    padding: 2px;
+    margin: 3px;
+}
+
+.person_name {
+    color: blue;
+    text-decoration: underline;
+    cursor:pointer;
+}
+
+#user_list {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+}
+
+#person_modal {
+    position: absolute;
+    top: calc(50% - 250px);
+    left: calc(50% - 250px);
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 25px;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.modal_form_row {
+    width: 100%;
+    padding: 5px;
+}
+
+.person_modal_text_box {
+    width: 200px;
+}
+
+.user_modal_group_remove_link {
+    font-size: 80%;
+    vertical-align: super;    
+    display: inline;
+    color: blue;
+}

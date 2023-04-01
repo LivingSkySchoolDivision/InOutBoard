@@ -1,4 +1,5 @@
-var INOUTAPIRoot = "https://inoutapi.lskysd.ca"; // No trailing slash
+//var INOUTAPIRoot = "https://inoutapi.lskysd.ca"; // No trailing slash
+var INOUTAPIRoot = "https://localhost:5001"; // No trailing slash
 
 function log(string) {
 	console.log(string);
@@ -74,7 +75,6 @@ function INOUTAPIGetAllGroups(callbackFunction) {
 		$.each(data, function(categoryIndex, group) {
 			returnMe.push(group);
 		}); // each
-		log("Returning " + returnMe.length + " groups");
 		callbackFunction(returnMe);
 	}); // getJSON
 }
@@ -85,4 +85,30 @@ function INOUTAPIGetGroup(groupID, callbackFunction) {
 
 		callbackFunction(data);
 	}); // getJSON
+}
+
+function INOUTAPIGetUser(personid, callbackFunction) {
+	var JSONURL = INOUTAPIRoot + "/People/" + personid
+	
+	var returnMe = new Array();
+	$.getJSON(JSONURL, function(data) {
+		callbackFunction(data);
+	}); // getJSON
+}
+
+function INOUTAPIUpdateUser(person) {		
+	$.ajax({
+		url:INOUTAPIRoot + '/people/' + person.id,
+		method:'PUT',
+		dataType:'json',
+		data:JSON.stringify(person),
+		contentType:"application/json",
+		success: function() {
+			log("Success updating " + person.id);
+		},
+		error: function(data, status, xhr) {
+			log("Failed to update person " + person.id + "");
+			log("Error:" + data);
+		}
+	});
 }

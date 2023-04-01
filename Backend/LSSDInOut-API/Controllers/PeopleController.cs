@@ -36,5 +36,35 @@ namespace LSSD.InOut.API.Controllers
         {
             return _personRepository.Get(id);
         }
+
+        // PUT: api/Person/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Person value)
+        {
+            if (_personRepository.Get(id) != null)
+            {
+                _personRepository.Update(value);
+                return Ok(value);
+            }
+            else
+            {
+                return NotFound("Person with id " + id + " not found");
+            }
+        }
+
+        // DELETE: api/Person/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id, [FromBody] Person value)
+        {
+            if (_personRepository.Get(id) != null)            {
+                _personRepository.Delete(value);
+                return Ok(value);
+            }
+            else
+            {
+                return NotFound("Person with id " + id + " not found");
+            }
+        }
+
     }
 }

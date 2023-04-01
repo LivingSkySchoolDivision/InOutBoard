@@ -23,3 +23,12 @@ $(document).ready(function(){
 setInterval(function() {
 	onInterval_UpdateUserStatuses();
 }, 60000);
+
+/* Refresh the page every hour ish */
+setInterval(function() {
+    location.reload();
+}, (300000));
+
+setInterval(function () {
+	checkPageWatchdog();
+}, (5000));

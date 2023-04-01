@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');
+
+/* 
+	Color themes I'm playing with
+	Solarized: bg: rgb(253, 247, 227), fg: #4f5b66;
+*/
+
+
+/* *********************************************************************** */
+/* * Page elements                                                       * */
+/* *********************************************************************** */
+body {
+	padding: 0;
+	margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.loading_text {	
+	font-size: 30px;
+	font-weight: bold;
+	text-align: center;
+	background-color: #202020;
+	color: white;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 999;
+}
+
+.status_log {
+	font-size: 8pt;
+	text-align: left;
+}
+
+#user_list {
+	display: grid;
+	grid-template-columns: 50% 50%;
+	grid-auto-flow: row;
+}
+
+#user_list .person {
+	
+}
+
+/* *********************************************************************** */
+/* * Person list                                                         * */
+/* *********************************************************************** */
+.person {
+	margin: 5px;
+	padding: 0;	
+	padding-bottom: 5px;
+	position: relative;
+	display: block;	
+}
+
+.person_name {
+	display: inline;
+	font-size: 25px;
+	padding-left: 10px;
+	font-weight: 500;
+}
+
+.person_status_container {
+	display: inline;
+}
+
+.person_status {
+	display: inline;
+	font-size: 20px;
+}
+
+/* *********************************************************************** */
+/* * Statuses                                                            * */
+/* *********************************************************************** */
+
+.status_unknown {
+	color: #555555;
+}
