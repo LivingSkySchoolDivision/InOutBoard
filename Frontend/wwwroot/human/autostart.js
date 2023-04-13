@@ -19,6 +19,10 @@ $(document).ready(function(){
  3600000     1 hour
  */
 
-setInterval(function() {
+ setInterval(function() {
 	onInterval_UpdateUserStatuses();
-}, 60000);
+}, 10000);
+
+setInterval(function() {
+    window.location.replace(window.location.href);
+}, 2700000);

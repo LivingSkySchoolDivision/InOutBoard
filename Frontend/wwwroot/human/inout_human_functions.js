@@ -13,13 +13,17 @@ function buildPersonHTML(person) {
 
 	var content = "";
 
-	content += "<div class=\"person\">";
+	content += "<div class=\"person\" id=\"person_" + person.id + "\">";
+
+	content += "<div class=\"person_status_icon status_icon_unknown\"><img id=\"person_status_icon_" + person.id + "\" class=\"person_status_icon_image\" src=\"../img/circle.svg\"></div>";
 
 	content += "<div class=\"person_name\">";
 	content += person.displayName;
 	content += "</div>";
 
-	content += "<div class=\"person_status_container\"><div class=\"person_status status_unknown\" id=\"person_status_" + person.id + "\">'s whereabouts are unknown.</div></div>";
+	content += "<div class=\"person_status_container\"><div class=\"person_status\" id=\"person_status_" + person.id + "\"><span class=\"status_unknown\">'s whereabouts are unknown.</span></div></div>";
+
+	content += "<div class=\"person_status_text\" id=\"person_status_text_" + person.id + "\"></div>";
 
 	//content += "<div class=\"person_buttons\" id=\"person_buttons_" + person.id + "\">";
 	//content += "<div id=\"person_button_" + person.id + "_in\" class=\"person_button person_button_dim noselect\"><div id=\"btnPersonStatusIn_" + person.id +  "\" class=\"person_button_contents noselect\" onClick=\"onclick_btnPersonStatusIn(" + person.id + ")\">IN</div></div>";
@@ -72,7 +76,6 @@ function buildUserList(people) {
 	// Empty the list
 	$("#" + divID).empty();
 	people.forEach(function(person) {
-
 		// Add the user's HTML
 		$("#" + divID).append(buildPersonHTML(person));
 		if (person.hasStatus == true) {
@@ -80,44 +83,7 @@ function buildUserList(people) {
 		}
 	});
 
-	// Hide the loading animation
-	$("#loading").fadeOut();
-
-	// Show the title bar
-	$("#title_bar").show();
-}
-
-function buildFilterButton(group) {
-	var content = "";
-
-	content += "<div id=\"btnChangeFilter_" + group.id + "\" class=\"filter_option\" onclick=\"onClick_btnChangeFilter(" + group.id + ");\">" + group.name + "</div>";
-
-	return content;
-}
-
-function buildGroupList(groups) {
-	console.log("Building group list");
-
-	var divID = "mnuFilterSelect";
-
-	// Empty the list
-	$("#" + divID).empty();
-
-	// Add "All people" group
-	$("#" + divID).append(buildFilterButton({ "id":0, "name":"Everyone (no filter)" }));
-
-	// Add all other groups
-	groups.forEach(function(group) {
-
-		// Add the user's HTML
-		$("#" + divID).append(buildFilterButton(group));
-	});
-
-	// Hide the loading animation
-	$("#loading").fadeOut();
-
-	// Show the title bar
-	$("#title_bar").show();
+	userUpdaterCallback(people);
 }
 
 /* ************************************************************** */
@@ -125,56 +91,13 @@ function buildGroupList(groups) {
 /* ************************************************************** */
 
 function onPageLoad() {
-	// Load the list of all groups
-	INOUTAPIGetAllGroups(buildGroupList);
-
- 	// Load all group members
-	INOUTAPIGetGroupMembers(filterGroupID,buildUserList);
+	INOUTAPIGetAllUsers(buildUserList);
 }
 
 function onInterval_UpdateUserStatuses() {
-	INOUTAPIGetGroupMembers(filterGroupID,userUpdaterCallback);
+	INOUTAPIGetAllUsers(userUpdaterCallback);
 }
 
-function userUpdaterCallback(people) {
-	people.forEach(function(person) {
-		if (person.hasStatus == true) {
-			updatePersonStatus(person.id, person.currentStatus);
-		}
-	});
-}
-
-function filterNameCallback(group) {
-	var groupName = "Everyone (no filter)";
-
-	if (group != null) {
-		groupName = group.name;
-	}
-
-	update_filter_name(group.name);
-}
-
-function filterUpdateCallback(group) {
-	var groupID = 0;
-	var groupName = "Everyone (no filter)";
-
-	if (group != null) {
-		groupID = group.id;
-		groupName = group.name;
-	}
-
-	// Set the filter
-	setFilter(groupID);
-
-	// Update the filter name
-	update_filter_name(groupName);
-
-	// Refresh the list of users
-	INOUTAPIGetGroupMembers(groupID ,buildUserList);
-
-	// Hide the filter menu
-	hideFilterSelect();
-}
 
 /* ************************************************************** */
 /* * Button handling logic                                      * */
@@ -192,61 +115,6 @@ function onclick_btnPersonStatusOut(personID) {
 function onclick_btnSetOutStatus(personID) {
 	setStatus_Out(personID);
 	hideSlideOutOptionsBar(personID);
-}
-
-function onclick_TitleBar() {
- 	toggleFilterSelect();
-}
-
-function onClick_btnChangeFilter(groupID) {
-	INOUTAPIGetGroup(groupID, filterUpdateCallback);
-}
-
-/* ************************************************************** */
-/* * Title bar / Filter bar logic                               * */
-/* ************************************************************** */
-
-function showFilterSelect() {
-	var divID = "mnuFilterSelect";
-	$("#" + divID).slideDown();
-	$("#" + divID).removeClass("hidden");
-}
-
-function hideFilterSelect() {
-	var divID = "mnuFilterSelect";
-	$("#" + divID).slideUp();
-	$("#" + divID).addClass("hidden");
-}
-
-function toggleFilterSelect() {
-	var divID = "mnuFilterSelect";
-
-	if ($("#" + divID).hasClass("hidden")) {
-		showFilterSelect();
-	} else {
-		hideFilterSelect();
-	}
-}
-
-function update_filter_name(groupName) {
-	$("#lblFilterBy").text(groupName);
-}
-
-function setFilter(groupID) {
-	console.log("setting filter to " + groupID);
-
-	// Set the filter variable here (for as long as this page doesn't refresh)
-	filterGroupID = groupID;
-
-	// Save this to a cookie if we can (so we can pick it up if the page does refresh)
-	Cookies.set("lssd_inout_filter_groupid", groupID, { expires: 3650 });
-
-	// Update filter name to the new group name
-	update_filter_name(groupID);
-}
-
-function getFilterFromCookies() {
-  	return Cookies.get("lssd_inout_filter_groupid");
 }
 
 /* ************************************************************** */
@@ -297,66 +165,13 @@ function hideAllSlideOutOptionsBars() {
 function userUpdaterCallback(people) {
 	people.forEach(function(person) {
 		if (person.hasStatus == true) {
+			console.log("Updating status for " + person.displayName);
 			updatePersonStatus(person.id, person.currentStatus);
 		}
 	});
 }
 
-function setPersonCustomStatus(personID, status) {
-	$("#txtCustomOutStatus_" + personID).val(status);
-}
 
-function setPersonUnknown(personID) {
-	// Reset status CSS - don't assume it's in a specific state
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
-	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
-	$("#person_button_" + personID +"_in").addClass("person_button_dim");
-	$("#person_button_" + personID +"_out").addClass("person_button_dim");
-
-}
-
-function setPersonIn(personID) {
-	// Reset status CSS - don't assume it's in a specific state
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
-	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
-
-	$("#person_button_" + personID +"_in").addClass("person_button_active");
-	$("#person_button_" + personID +"_out").addClass("person_button_dim");
-}
-
-function setPersonOut(personID) {
-	// Reset status CSS - don't assume it's in a specific state
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
-	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
-
-	$("#person_button_" + personID +"_in").addClass("person_button_dim");
-	$("#person_button_" + personID +"_out").addClass("person_button_active");
-}
-
-function setPersonBusy(personID) {
-	$("#person_button_" + personID +"_in").removeClass("person_button_active");
-	$("#person_button_" + personID +"_out").removeClass("person_button_active");
-	$("#person_button_" + personID +"_in").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_out").removeClass("person_button_dim");
-	$("#person_button_" + personID +"_in").removeClass("person_button_busy");
-	$("#person_button_" + personID +"_out").removeClass("person_button_busy");
-
-
-	$("#person_button_" + personID +"_in").addClass("person_button_busy");
-	$("#person_button_" + personID +"_out").addClass("person_button_dim");
-}
 
 // Status Types
 //  0 Unknown
@@ -368,30 +183,30 @@ function updatePersonStatus(personID, status) {
 		return;
 	}
 
+	var personDiv_status_word = "#person_status_" + personID;
+	var personDiv_status_text = "#person_status_text_" + personID;
+	var personDiv_status_icon = "#person_status_icon_" + personID;
+
 	switch(status.statusType) {
-		case 0:
-			setPersonUnknown(personID);
-			break;
 		case 1:
-			setPersonIn(personID);
+			// In
+			$(personDiv_status_word).html(" is <b class=\"status_word_in\">IN</b>");
+			$(personDiv_status_text).html("");			
+			$(personDiv_status_icon).attr("src", "../img/circle-tick.svg");
 			break;
 		case 2:
-			setPersonOut(personID);
+			// Out
+			$(personDiv_status_word).html(" is <b class=\"status_word_out\">OUT</b>");
+			if (status.content.length > 0) {
+				$(personDiv_status_text).html(" - " + status.content);
+			}	
+			$(personDiv_status_icon).attr("src", "../img/circle-delete.svg");		
 			break;
-		case 3:
-			setPersonBusy(personID);
-			break;
-		default:
-			setPersonUnknown(personID);
+		default:	
+			$(personDiv_status_icon).attr("src", "../img/circle.svg");
+			$(personDiv_status_text).html("");						
 			break;
 	}
-
-	// Update their custom text
-	var customStatusText = "";
-	if (status.content.length > 0) {
-		setPersonCustomStatus(personID, status.content);
-	}
-
 }
 
 function setStatus_In(personID) {
@@ -449,26 +264,5 @@ function showCheckMarkAnimation(divID) {
 
 	if (oldContents != "✔") {
 		$("#" + divID).addClass("checkmark").text("✔").delay(500).fadeOut(1000, function() {$("#" + divID).text(oldContents).removeClass("checkmark").fadeIn("fast");});
-	}
-}
-
-/* ************************************************************** */
-/* * Page reload watchdog                                       * */
-/* ************************************************************** */
-
-function initializePageWatchdog() {
-	var date = new Date();
-	pageLoadedTimeStamp = date.getTime();
-	$("#last_refresh_time").html(date.toTimeString());
-	$("#last_refresh_date").html(date.toDateString());
-}
-
-function checkPageWatchdog() {
-	var date = new Date();
-	var currentTimestamp = date.getTime();
-
-	// Show warning at 6 minutes (1 minute after the page should have reloaded)
-	if ((currentTimestamp - pageLoadedTimeStamp) > 360000) {
-		$("#watchdog_reload_warning_message").fadeIn();
 	}
 }
