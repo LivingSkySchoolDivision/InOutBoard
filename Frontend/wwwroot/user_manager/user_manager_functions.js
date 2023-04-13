@@ -319,6 +319,7 @@ function save_person_modal()
 		// Send the update
 		INOUTAPIUpdateUser(displayed_person, refresh_all_lists);
 	}
+	hide_person_modal();
 }
 
 function hide_person_modal()
