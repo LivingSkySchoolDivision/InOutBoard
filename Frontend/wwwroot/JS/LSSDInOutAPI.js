@@ -1,5 +1,4 @@
-//var INOUTAPIRoot = "https://inoutapi.lskysd.ca"; // No trailing slash
-var INOUTAPIRoot = "https://localhost:5001"; // No trailing slash
+var INOUTAPIRoot = "https://inoutapi.lskysd.ca"; // No trailing slash
 
 function log(string) {
 	console.log(string);
