@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');
+
+/* 
+	Color themes I'm playing with
+	Solarized: bg: rgb(253, 247, 227), fg: #4f5b66;
+*/
+
+
+/* *********************************************************************** */
+/* * Page elements                                                       * */
+/* *********************************************************************** */
+body {
+	padding: 0;
+	margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.loading_text {	
+	font-size: 30px;
+	font-weight: bold;
+	text-align: center;
+	background-color: #202020;
+	color: white;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 999;
+}
+
+.status_log {
+	font-size: 8pt;
+	text-align: left;
+}
+
+#user_list_container {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 25px;
+}
+
+#user_list {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+#user_list .person {
+	width: 100%;	
+}
+
+/* *********************************************************************** */
+/* * Person list                                                         * */
+/* *********************************************************************** */
+.person {
+	margin: 5px;
+	padding: 0;	
+	padding-bottom: 5px;
+	position: relative;
+	display: block;	
+}
+
+.person_name {
+	display: inline;
+	font-size: 25px;
+	padding-left: 10px;
+	font-weight: 500;
+}
+
+.person_status_container {
+	display: inline;
+}
+
+.person_status {
+	display: inline;
+	font-size: 20px;
+}
+
+.person_status_icon {
+	display: inline-block;
+}
+
+.person_status_icon_image {
+	width: 16px;
+	height: 16px;
+}
+
+.status_icon_unknown {
+	opacity: 0.5;
+}
+
+.status_icon_in {
+	opacity: 1;
+}
+
+.status_icon_out {
+	opacity: 1;
+}
+
+.person_status_text {
+	display: inline;
+	font-size: 110%;
+	color: #555555;
+}
+
+.status_word_in {
+	color: #007700;
+}
+
+.status_word_out {
+	color: #770000;
+}
+
+/* *********************************************************************** */
+/* * Statuses                                                            * */
+/* *********************************************************************** */
+
+.status_unknown {
+	color: #C0C0C0;
+}

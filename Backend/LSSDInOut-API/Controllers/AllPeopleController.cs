@@ -27,7 +27,7 @@ namespace LSSD.InOut.API.Controllers
         [HttpGet]
         public IEnumerable<Person> Get()
         {
-            return _personRepository.GetEnabled();
+            return _personRepository.GetAll();
         }
 
         // GET: api/Person/5
@@ -36,5 +36,7 @@ namespace LSSD.InOut.API.Controllers
         {
             return _personRepository.Get(id);
         }
+
+        
     }
 }

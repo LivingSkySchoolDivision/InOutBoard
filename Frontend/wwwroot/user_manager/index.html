@@ -1,0 +1,110 @@
+<meta charset="utf-8"/>
+<html>
+	<head>
+		<!-- Tell Safari that this is an App, not a website -->
+    	<meta name="apple-mobile-web-app-capable" content="yes">
+    	<meta name="viewport" content="user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    	<meta name="format-detection" content="telephone=no">
+    	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <!-- Prevent caching -->
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+
+    	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+    	<script src="../JS/jquery-3.3.1.min.js"></script>
+    	<script src="../JS/AppleLinkFix.js"></script>
+        <script src="../JS/js.cookie.js"></script>
+    	<script src="../JS/LSSDInOutAPI.js"></script>
+
+        <script src="user_manager_functions.js"></script>
+    	<script src="autostart.js"></script>
+        <link href="user_manager.css" rel="stylesheet" />
+
+	</head>
+	<body>
+        <div id="person_modal" style="display: none;" >
+            <input type="hidden" id="person_modal_personid" class="person_modal_text_box">
+            <div class="modal_form_row">
+                First name: <input type="text" id="person_modal_first_name" class="person_modal_text_box">
+            </div>
+            <div class="modal_form_row">
+                Last name: <input type="text" id="person_modal_last_name" class="person_modal_text_box">
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <b>Groups</b><br/>
+                <div id="person_modal_group_list"></div>
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <b>Add Group</b><br/>
+                <select id="person_modal_group_select">
+                </select>
+                <button onclick="modal_group_add_button()">Add</button>
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <button onclick="save_person_modal()">Save</button>
+                <button onclick="delete_person()" style="color: red;">DELETE USER</button>
+                <button onclick="hide_person_modal()">Cancel</button>
+            </div>
+        </div>
+        <div id="group_modal" style="display: none;" >
+            <input type="hidden" id="group_modal_groupid" class="person_modal_text_box">
+            <div class="modal_form_row">
+                Group name: <input type="text" id="group_modal_group_name" class="person_modal_text_box">
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <b>Members</b><br/>
+                <div id="group_modal_member_list"></div>
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <button onclick="save_group_modal()">Save</button>
+                <button onclick="delete_group()">DELETE GROUP</button>
+                <button onclick="hide_group_modal()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="page_container">
+            <h1>Groups</h1>
+            <h2>Add Group</h2>
+            <div class="add_new_item_form">
+                <div class="modal_form_row">
+                    Group name:&nbsp;<input type="text" id="new_group_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    <button onclick="add_new_group()">Save</button>
+                </div>
+            </div>
+            <h2>Modify groups</h2>
+            <div id="group_list"></div>
+
+
+            <H1>Users</H1>
+            <h2>Add user</h2>
+            <div class="add_new_item_form">
+                <div class="modal_form_row">
+                    First name:&nbsp;<input type="text" id="new_person_first_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    Last name:&nbsp;&nbsp;<input type="text" id="new_person_last_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    <button onclick="add_new_person()">Save</button>
+                </div>
+            </div>
+            <H2>Modify Users</H2>
+            <div id="user_list"></div>
+
+
+        </div>
+        <br/><br/><br/>
+	</body>
+</html>

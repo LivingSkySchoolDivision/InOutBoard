@@ -36,5 +36,48 @@ namespace LSSD.InOut.API.Controllers
         {
             return _groupRepository.Get(id);
         }
+
+        // PUT: api/Groups/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Group value)
+        {
+            if (_groupRepository.Get(id) != null)
+            {
+                _groupRepository.Update(value);
+                return Ok(value);
+            }
+            else
+            {
+                return NotFound("Groups with id " + id + " not found");
+            }
+        }
+
+        // DELETE: api/Groups/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id, [FromBody] Group value)
+        {
+            if (_groupRepository.Get(id) != null)            {
+                _groupRepository.Delete(value);
+                return Ok(value);
+            }
+            else
+            {
+                return NotFound("Groups with id " + id + " not found");
+            }
+        }
+
+        // POST: api/Groups/5
+        [HttpPost]
+        public IActionResult Post([FromBody] Group value)
+        {
+            try {
+                _groupRepository.Add(value);
+                return Ok(value);
+            }
+            catch
+            {
+                return BadRequest("An error occurred.");
+            }
+        }
     }
 }

@@ -95,5 +95,66 @@ namespace LSSD.InOut.Data.Repositories
 
             return null;
         }
+
+        public void Update(Group group) 
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "UPDATE Groups SET Name=@GRPNAME WHERE ID=@GRPID;"
+                })
+                {
+                    sqlCommand.Parameters.AddWithValue("GRPID", group.ID);
+                    sqlCommand.Parameters.AddWithValue("GRPNAME", group.Name);
+
+                    sqlCommand.Connection.Open();                    
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Connection.Close();
+                }
+            }
+        }
+
+        public void Add(Group group) 
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "INSERT INTO Groups(Name) VALUES (@GRPNAME);"
+                })
+                {
+                    sqlCommand.Parameters.AddWithValue("GRPNAME", group.Name);
+
+                    sqlCommand.Connection.Open();                    
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Connection.Close();
+                }
+            }
+        }
+
+        public void Delete(Group group) 
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "DELETE FROM Groups WHERE Groups.ID=@GRPID;"
+                })
+                {
+                    sqlCommand.Parameters.AddWithValue("GRPID", group.ID);
+                    sqlCommand.Connection.Open();                    
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Connection.Close();
+                }
+            }
+        }
+
     }
 }

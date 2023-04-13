@@ -28,7 +28,7 @@ function INOUTAPIGetAllUsers(callbackFunction) {
 	}); // getJSON
 }
 
-function INOUTAPIGetGroupMembers(groupID,callbackFunction) {
+function INOUTAPIGetGroupMembers(groupID, callbackFunction) {
 	if ((groupID == 0) || (groupID == null)) {
 		INOUTAPIGetAllUsers(callbackFunction);
 		return;
@@ -74,7 +74,6 @@ function INOUTAPIGetAllGroups(callbackFunction) {
 		$.each(data, function(categoryIndex, group) {
 			returnMe.push(group);
 		}); // each
-		log("Returning " + returnMe.length + " groups");
 		callbackFunction(returnMe);
 	}); // getJSON
 }
@@ -85,4 +84,152 @@ function INOUTAPIGetGroup(groupID, callbackFunction) {
 
 		callbackFunction(data);
 	}); // getJSON
+}
+
+function INOUTAPIGetUser(personid, callbackFunction) {
+	var JSONURL = INOUTAPIRoot + "/People/" + personid
+
+	var returnMe = new Array();
+	$.getJSON(JSONURL, function(data) {
+		callbackFunction(data);
+	}); // getJSON
+}
+
+function INOUTAPIUpdateUser(person, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/people/' + person.id,
+		method:'PUT',
+		dataType:'json',
+		data:JSON.stringify(person),
+		contentType:"application/json",
+		success: function() {
+			log("Success updating " + person.id);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to update person " + person.id + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
+}
+
+function INOUTAPIAddUser(person, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/people/',
+		method:'POST',
+		dataType:'json',
+		data:JSON.stringify(person),
+		contentType:"application/json",
+		success: function() {
+			log("Success adding " + person.displayName);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to add person " + person.displayName + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
+}
+
+function INOUTAPIAddGroup(group, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/Groups/',
+		method:'POST',
+		dataType:'json',
+		data:JSON.stringify(group),
+		contentType:"application/json",
+		success: function() {
+			log("Success adding " + group.name);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to add person " + group.name + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
+}
+
+
+function INOUTAPIDeletePerson(person, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/people/' + person.id,
+		method:'DELETE',
+		dataType:'json',
+		data:JSON.stringify(person),
+		contentType:"application/json",
+		success: function() {
+			log("Success deleting " + person.id);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to delete person " + person.id + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
+}
+
+function INOUTAPIDeleteGroup(group, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/Groups/' + group.id,
+		method:'DELETE',
+		dataType:'json',
+		data:JSON.stringify(group),
+		contentType:"application/json",
+		success: function() {
+			log("Success deleting " + group.id);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to delete group " + group.id + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
+}
+
+function INOUTAPIUpdateGroup(group, callbackFunction) {
+	$.ajax({
+		url:INOUTAPIRoot + '/Groups/' + group.id,
+		method:'PUT',
+		dataType:'json',
+		data:JSON.stringify(group),
+		contentType:"application/json",
+		success: function() {
+			log("Success updating " + group.id);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		},
+		error: function(data, status, xhr) {
+			log("Failed to update group " + group.id + "");
+			log("Error:" + data);
+			if (callbackFunction != null) {
+				callbackFunction();
+			}
+		}
+	});
 }
