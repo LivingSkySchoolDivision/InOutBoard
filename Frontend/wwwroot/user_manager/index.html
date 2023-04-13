@@ -15,7 +15,7 @@
         <meta http-equiv="pragma" content="no-cache" />
 
     	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    	
+
     	<script src="../JS/jquery-3.3.1.min.js"></script>
     	<script src="../JS/AppleLinkFix.js"></script>
         <script src="../JS/js.cookie.js"></script>
@@ -27,7 +27,7 @@
 
 	</head>
 	<body>
-        <div id="person_modal" style="display: none;" >            
+        <div id="person_modal" style="display: none;" >
             <input type="hidden" id="person_modal_personid" class="person_modal_text_box">
             <div class="modal_form_row">
                 First name: <input type="text" id="person_modal_first_name" class="person_modal_text_box">
@@ -38,34 +38,73 @@
             <br/>
             <div class="modal_form_row">
                 <b>Groups</b><br/>
-                <div id="person_modal_group_list">
-                    Group 1 (Remove)
-                </div>                
+                <div id="person_modal_group_list"></div>
             </div>
             <br/>
             <div class="modal_form_row">
                 <b>Add Group</b><br/>
-                <select id="person_modal_group_select">                    
+                <select id="person_modal_group_select">
                 </select>
                 <button onclick="modal_group_add_button()">Add</button>
             </div>
             <br/>
             <div class="modal_form_row">
-                <button onclick="save_person_modal()">Save</button> 
+                <button onclick="save_person_modal()">Save</button>
+                <button onclick="delete_person()" style="color: red;">DELETE USER</button>
                 <button onclick="hide_person_modal()">Cancel</button>
+            </div>
+        </div>
+        <div id="group_modal" style="display: none;" >
+            <input type="hidden" id="group_modal_groupid" class="person_modal_text_box">
+            <div class="modal_form_row">
+                Group name: <input type="text" id="group_modal_group_name" class="person_modal_text_box">
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <b>Members</b><br/>
+                <div id="group_modal_member_list"></div>
+            </div>
+            <br/>
+            <div class="modal_form_row">
+                <button onclick="save_group_modal()">Save</button>
+                <button onclick="delete_group()">DELETE GROUP</button>
+                <button onclick="hide_group_modal()">Cancel</button>
             </div>
         </div>
 
         <div class="page_container">
-            <H1>Users</H1>
-            <h2>Add user</h2>
-            <H2>Modify Users</H2>            
-            <div id="user_list"></div>
-
             <h1>Groups</h1>
             <h2>Add Group</h2>
+            <div class="add_new_item_form">
+                <div class="modal_form_row">
+                    Group name:&nbsp;<input type="text" id="new_group_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    <button onclick="add_new_group()">Save</button>
+                </div>
+            </div>
             <h2>Modify groups</h2>
             <div id="group_list"></div>
-        </div>			
+
+
+            <H1>Users</H1>
+            <h2>Add user</h2>
+            <div class="add_new_item_form">
+                <div class="modal_form_row">
+                    First name:&nbsp;<input type="text" id="new_person_first_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    Last name:&nbsp;&nbsp;<input type="text" id="new_person_last_name" class="person_modal_text_box">
+                </div>
+                <div class="modal_form_row">
+                    <button onclick="add_new_person()">Save</button>
+                </div>
+            </div>
+            <H2>Modify Users</H2>
+            <div id="user_list"></div>
+
+
+        </div>
+        <br/><br/><br/>
 	</body>
 </html>

@@ -22,8 +22,29 @@
     grid-template-columns: 33% 33% 33%;
 }
 
+.add_new_item_form {
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 25px;
+    min-width: 300px;
+    max-width: 400px;
+}
+
 #person_modal {
-    position: absolute;
+    position: fixed;
+    top: calc(50% - 250px);
+    left: calc(50% - 250px);
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 25px;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+#group_modal {
+    position: fixed;
     top: calc(50% - 250px);
     left: calc(50% - 250px);
     background: #f0f0f0;

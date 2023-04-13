@@ -52,6 +52,20 @@ namespace LSSD.InOut.API.Controllers
             }
         }
 
+        // POST: api/Person/5
+        [HttpPost]
+        public IActionResult Post([FromBody] Person value)
+        {
+            try {
+                _personRepository.Add(value);
+                return Ok(value);
+            }
+            catch
+            {
+                return BadRequest("An error occurred.");
+            }
+        }
+
         // DELETE: api/Person/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id, [FromBody] Person value)

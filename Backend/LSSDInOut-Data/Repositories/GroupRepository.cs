@@ -117,6 +117,26 @@ namespace LSSD.InOut.Data.Repositories
             }
         }
 
+        public void Add(Group group) 
+        {
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "INSERT INTO Groups(Name) VALUES (@GRPNAME);"
+                })
+                {
+                    sqlCommand.Parameters.AddWithValue("GRPNAME", group.Name);
+
+                    sqlCommand.Connection.Open();                    
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Connection.Close();
+                }
+            }
+        }
+
         public void Delete(Group group) 
         {
             using (SqlConnection connection = new SqlConnection(_dbConnectionString))

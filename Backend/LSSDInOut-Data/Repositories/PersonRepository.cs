@@ -127,6 +127,37 @@ namespace LSSD.InOut.Data.Repositories
             }
         }
 
+        public void Add(Person person) 
+        {
+            // Need to convert groups into a list of numbers
+            StringBuilder newGroupsField = new StringBuilder();
+
+            foreach(int groupId in person.GroupsIDs) 
+            {
+                newGroupsField.Append(groupId);
+                newGroupsField.Append(";");
+            }
+
+            using (SqlConnection connection = new SqlConnection(_dbConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand
+                {
+                    Connection = connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "INSERT INTO people(FirstName, LastName, GroupMemberships) VALUES (@FIRSTNAME, @LASTNAME, @GROUPS);"
+                })
+                {
+                    sqlCommand.Parameters.AddWithValue("FIRSTNAME", person.FirstName);
+                    sqlCommand.Parameters.AddWithValue("LASTNAME", person.LastName);
+                    sqlCommand.Parameters.AddWithValue("GROUPS", newGroupsField.ToString());
+
+                    sqlCommand.Connection.Open();                    
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Connection.Close();
+                }
+            }
+        }
+
         public void Delete(Person person) 
         {
             using (SqlConnection connection = new SqlConnection(_dbConnectionString))

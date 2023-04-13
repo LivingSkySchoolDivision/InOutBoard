@@ -65,5 +65,19 @@ namespace LSSD.InOut.API.Controllers
                 return NotFound("Groups with id " + id + " not found");
             }
         }
+
+        // POST: api/Groups/5
+        [HttpPost]
+        public IActionResult Post([FromBody] Group value)
+        {
+            try {
+                _groupRepository.Add(value);
+                return Ok(value);
+            }
+            catch
+            {
+                return BadRequest("An error occurred.");
+            }
+        }
     }
 }
