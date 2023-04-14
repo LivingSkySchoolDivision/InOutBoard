@@ -22,9 +22,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./Backend/Dockerfile
+          - dockerfile: ./Dockerfile-BackEnd
             image: ghcr.io/livingskyschooldivision/inout-backend
-          - dockerfile: ./Frontend/Dockerfile
+          - dockerfile: ./Dockerfile-FrontEnd
             image: ghcr.io/livingskyschooldivision/inout-frontend
     permissions:
       contents: read
