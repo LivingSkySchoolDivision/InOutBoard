@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-bionic AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Backend/LSSDInOut-API/LSSDInOut-API.csproj", "Backend/LSSDInOut-API/"]
-COPY ["Backend/LSSDInOut-Data/LSSDInOut-Data.csproj", "Backend/LSSDInOut-Data/"]
-COPY ["Backend/LSSDInOut-Lib/LSSDInOut-Lib.csproj", "Backend/LSSDInOut-Lib/"]
+COPY ["LSSDInOut-API/LSSDInOut-API.csproj", "LSSDInOut-API/"]
+COPY ["LSSDInOut-Data/LSSDInOut-Data.csproj", "LSSDInOut-Data/"]
+COPY ["LSSDInOut-Lib/LSSDInOut-Lib.csproj", "LSSDInOut-Lib/"]
 RUN dotnet restore "LSSDInOut-API/LSSDInOut-API.csproj"
 COPY . .
 WORKDIR "/src/LSSDInOut-API"
