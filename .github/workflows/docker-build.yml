@@ -19,15 +19,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - dockerfile: ./Backend/Dockerfile
             image: ghcr.io/livingskyschooldivision/inout-backend
-            working-directory: ./Backend/
+            context: ./Backend/
           - dockerfile: ./Frontend/Dockerfile
             image: ghcr.io/livingskyschooldivision/inout-frontend
-            working-directory: ./Frontend/
+            context: ./Frontend/
     permissions:
       contents: read
       packages: write
@@ -73,7 +73,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
